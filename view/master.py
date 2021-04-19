@@ -1,6 +1,7 @@
 from tkinter import *
 import os
 from .employee import EmployeeGUI
+from .timekeeping import TimekeepingGUI
 
 class Layouts(object):
     def __init__(self, root):
@@ -19,12 +20,14 @@ class Layouts(object):
         layout_title.grid(row = 0, columnspan = 2, pady = 50)
 
         def onClickEmployeeManage():
-            employee = EmployeeGUI(self.root)
-            print('hello1')
+            employee = Tk()
+            frm_employee = EmployeeGUI(employee)
+            self.root.destroy()
 
         def onClickKeeptimeManage():
-            employee.frame.destroy
-            print('hello2')
+            timekeeping = Tk()
+            frm_timekeeping = TimekeepingGUI(timekeeping)
+            self.root.destroy()
 
         btn_employee = Button(Layout_Frame, 
                         text = 'Quản lý nhân viên',

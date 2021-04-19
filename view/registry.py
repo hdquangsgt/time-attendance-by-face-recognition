@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import os
+from .employee import EmployeeGUI
 
 class RegistryForm(object):
     def __init__(self, root):
@@ -9,13 +10,13 @@ class RegistryForm(object):
         self.root.geometry('1350x700+0+0')
 
         #========= All images =========#
-        imageBG = os.path.abspath('view/images/background-login.png')
-        self.bg_icon = PhotoImage(file = imageBG)
-        bg_lbl = Label(self.root, image = self.bg_icon).place(x = 250, y = 0, relwidth = 1, relheight = 1)
+        # imageBG = os.path.abspath('view/images/background-login.png')
+        # self.bg_icon = PhotoImage(file = imageBG)
+        # bg_lbl = Label(self.root, image = self.bg_icon).place(x = 250, y = 0, relwidth = 1, relheight = 1)
 
-        icon_registry = os.path.abspath('view/images/registry.png')
-        self.icon_registry = PhotoImage(file=icon_registry)
-        registry_lbl = Label(self.root, image = self.icon_registry).place(x = 80, y = 80)
+        # icon_registry = os.path.abspath('view/images/registry.png')
+        # self.icon_registry = PhotoImage(file=icon_registry)
+        # registry_lbl = Label(self.root, image = self.icon_registry).place(x = 80, y = 80)
 
         registry_title = Label(self.root, 
                             text='Đăng ký nhân viên',
@@ -42,8 +43,10 @@ class RegistryForm(object):
         entry_2 = Entry(registry_frm)
         entry_2.grid(row = 2, column = 2, padx = 10, pady = 10)
 
-        label_3 = Label(registry_frm, text="Gender", width=20, compound = LEFT, font=("bold", 10))
-        label_3.grid(row = 3, column = 1, padx = 10, pady = 10)
-
-        Button(registry_frm, text='Submit',width=20,bg='brown',fg='white').place(x=180,y=380)
+        Button(registry_frm, text='Trở về',width=20,bg='brown',fg='white',command='goToBack').place(x=180,y=380)
+        Button(registry_frm, text='Đăng ký',width=20,bg='brown',fg='white').place(x=220,y=380)
         
+    def goToBack(self):
+        frame = Tk()
+        employee = EmployeeGUI(frame)
+        self.root.destroy()

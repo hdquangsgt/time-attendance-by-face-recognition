@@ -1,6 +1,5 @@
 # import the necessary packages
 from __future__ import print_function
-from view.photoboothapp import PhotoBoothApp
 from imutils.video import VideoStream
 import argparse
 import time
@@ -15,5 +14,6 @@ print("[INFO] warming up camera...")
 vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
 time.sleep(2.0)
 # start the app
+from .photoboothapp import PhotoBoothApp
 pba = PhotoBoothApp(vs, args["output"])
 pba.root.mainloop()

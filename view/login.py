@@ -8,7 +8,6 @@ class LoginGUI(object):
         self.root = root;
         self.root.title('Login');
         self.root.geometry('920x650+0+0');
-        
 
         #========= All images =========#
         imageBG = os.path.abspath('view/images/background-login.png')
