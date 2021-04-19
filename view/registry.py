@@ -1,7 +1,6 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import os
-from .employee import EmployeeGUI
 
 class RegistryForm(object):
     def __init__(self, root):
@@ -43,10 +42,11 @@ class RegistryForm(object):
         entry_2 = Entry(registry_frm)
         entry_2.grid(row = 2, column = 2, padx = 10, pady = 10)
 
-        Button(registry_frm, text='Trở về',width=20,bg='brown',fg='white',command='goToBack').place(x=180,y=380)
-        Button(registry_frm, text='Đăng ký',width=20,bg='brown',fg='white').place(x=220,y=380)
+        Button(registry_frm, text='Trở về',width=20,bg='brown',fg='white',command=self.goToBack).place(x=150,y=380)
+        Button(registry_frm, text='Đăng ký',width=20,bg='brown',fg='white').place(x=400,y=380)
         
     def goToBack(self):
+        from .employee import EmployeeGUI
         frame = Tk()
         employee = EmployeeGUI(frame)
         self.root.destroy()
