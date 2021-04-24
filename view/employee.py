@@ -100,7 +100,6 @@ class EmployeeGUI(object):
         table_employee.heading('email', text = 'Email')
         table_employee.heading('late_date', text = 'Số ngày đi trễ')
         table_employee.heading('off_date', text = 'Số ngày nghỉ')
-        table_employee.heading('action', text = 'Thao tác')
 
         table_employee['show'] = 'headings'
 
@@ -110,7 +109,6 @@ class EmployeeGUI(object):
         table_employee.column('email', width = 150)
         table_employee.column('late_date', width = 100)
         table_employee.column('off_date', width = 100)
-        table_employee.column('action', width = 100)
 
         self.loadData(table_employee)
         table_employee.pack(fill = BOTH, expand = 1)
@@ -121,33 +119,31 @@ class EmployeeGUI(object):
             return table_employee.item(selected, 'values')
 
         #   Create binding click function
-        def clicker(e):
-            record = getData()
+        def selectEmployeeDetail(e):
+            employee = getData()
             frame = Tk()
-            frame = DetailEmployeeGUI(frame,record[0])
+            frame = DetailEmployeeGUI(frame,employee)
             self.root.destroy()
 
-
+        def 
         #   Bindings
-        table_employee.bind('<Double-1>', clicker)
+        table_employee.bind('<Double-1>', selectEmployeeDetail)
+        table_employee.bind('<Button-3>',)
         
 
     def loadData(self,employee_tree):
-        filename = os.path.abspath('data/Employee.xlsx')
+        filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
         #   Clear old record
-        # clearTree()
-
-        #   Loop column list
-        for column in employee_tree['column']:
-            employee_tree.heading(column, text = column)
+        # clearTree(employee_tree)
 
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
             employee_tree.insert('','end',value=row)
+            employee_tree.insert
 
-    def clearTree():
+    def clearTree(my_tree):
         my_tree.delete(*my_tree.get_children())
 
     def registry(self):
@@ -156,14 +152,12 @@ class EmployeeGUI(object):
         self.root.destroy()
 
 class Employee(object):
-    def __init__(self):
-        self.id = ''
-        self.name = ''
-        self.birth = ''
-        self.email = ''
-        self.late_date = ''
-        self.off_date = ''
-
-
+    def __init__(self, id, name, birth, email, late_date, off_date):
+        self.id = id
+        self.name = name
+        self.birth = birth
+        self.email = email
+        self.late_date = late_date
+        self.off_date = off_date
         
         

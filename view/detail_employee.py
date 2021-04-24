@@ -1,7 +1,7 @@
 from tkinter import *
 
 class DetailEmployeeGUI(object):
-    def __init__(self, root, id):
+    def __init__(self, root, employee):
         self.root = root
         self.root.title('Quản lý nhân viên')
         self.root.geometry('1350x700+0+0')
@@ -21,7 +21,13 @@ class DetailEmployeeGUI(object):
         #   Load Avatar
 
         #   Button back
-
+        btn_back = Button(panel_left,
+                        text = 'Trở về',
+                        bg = 'green',
+                        fg = 'red',
+                        compound = CENTER,
+                        font = ('tim new roman', 20))
+        btn_back.grid(row = 10, column = 0, pady = 10)
         #   Panel right
         
         #   Load Employee Detail Information

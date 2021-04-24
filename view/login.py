@@ -1,6 +1,6 @@
 from tkinter import *
 from PIL import ImageTk, Image
-from .master import Layouts
+from .dashboard import Dashboard
 import os
 
 class LoginGUI(object):
@@ -62,5 +62,5 @@ class LoginGUI(object):
 
     def submit(self):
         window = Tk()
-        layouts = Layouts(window)
+        dashboard = Dashboard(window)
         self.root.destroy()

@@ -3,7 +3,7 @@ import os
 from .employee import EmployeeGUI
 from .timekeeping import TimekeepingGUI
 
-class Layouts(object):
+class Dashboard(object):
     def __init__(self, root):
         self.root = root
         self.root.geometry('1350x700+0+0')
