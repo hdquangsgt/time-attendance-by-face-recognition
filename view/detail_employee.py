@@ -5,7 +5,7 @@ class DetailEmployeeGUI(object):
         self.root = root
         self.root.title('Quản lý nhân viên')
         self.root.geometry('1350x700+0+0')
-
+        print(employee)
         #   Panel left
         panel_left = Frame(self.root, bd = 4, relief = RIDGE, bg = 'gray')
         panel_left.place(x = 20, y = 100, width = 400, height = 560)
@@ -26,10 +26,19 @@ class DetailEmployeeGUI(object):
                         bg = 'green',
                         fg = 'red',
                         compound = CENTER,
-                        font = ('tim new roman', 20))
+                        font = ('tim new roman', 20),
+                        command = self.goToBack)
         btn_back.grid(row = 10, column = 0, pady = 10)
+
+
         #   Panel right
         
         #   Load Employee Detail Information
 
         #   Button update
+    
+    def goToBack(self):
+            from .employee import EmployeeGUI
+            frame = Tk()
+            employee = EmployeeGUI(frame)
+            self.root.destroy()

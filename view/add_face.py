@@ -3,8 +3,7 @@ from PIL import Image,ImageTk
 import pytesseract
 import cv2
 from tkinter import *
-
-
+        
 width, height = 800, 600
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)

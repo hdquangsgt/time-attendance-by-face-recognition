@@ -1,4 +1,4 @@
-import the necessary packages
+# import the necessary packages
 from __future__ import print_function
 from view.login import LoginGUI
 from view.employee import EmployeeGUI

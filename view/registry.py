@@ -30,17 +30,26 @@ class RegistryForm(object):
         registry_frm = Frame(self.root, bg = 'white')
         registry_frm.place(x = 480, y = 100, width = 700, height = 500)
 
-        name_lbl = Label(registry_frm, text="Họ và tên", width=20, compound = LEFT, font=("bold", 10))
+        #   Field name
+        name_lbl = Label(registry_frm, text="Họ và tên", width = 20, compound = LEFT, font=("bold", 10))
         name_lbl.grid(row = 1, column = 1, padx = 10, pady = 10)
 
         name_entry = Entry(registry_frm)
         name_entry.grid(row = 1, column = 2, padx = 10, pady = 10)
 
-        label_2 = Label(registry_frm, text="Email", width=20, compound = LEFT, font=("bold", 10))
-        label_2.grid(row = 2, column = 1, padx = 10, pady = 10)
+        #   Field birth
+        birth_lbl = Label(registry_frm, text="Ngày sinh", width = 20, compound = LEFT, font=("bold", 10))
+        birth_lbl.grid(row = 1, column = 1, padx = 10, pady = 10)
 
-        entry_2 = Entry(registry_frm)
-        entry_2.grid(row = 2, column = 2, padx = 10, pady = 10)
+        year = month = day = StringVar()
+        # birth_entry = Label()
+
+        #   Field email
+        email_lbl = Label(registry_frm, text="Email", width = 20, compound = LEFT, font=("bold", 10))
+        email_lbl.grid(row = 2, column = 1, padx = 10, pady = 10)
+
+        email_entry = Entry(registry_frm)
+        email_entry.grid(row = 2, column = 2, padx = 10, pady = 10)
 
         Button(registry_frm, text='Trở về',width=20,bg='brown',fg='white',command=self.goToBack).place(x=150,y=380)
         Button(registry_frm, text='Đăng ký',width=20,bg='brown',fg='white').place(x=400,y=380)

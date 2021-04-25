@@ -5,6 +5,8 @@ from .timekeeping import TimekeepingGUI
 from .detail_employee import DetailEmployeeGUI
 import os
 import pandas as pd
+from datetime import datetime
+import cv2
 
 class EmployeeGUI(object):
     def __init__(self, root):
@@ -121,17 +123,31 @@ class EmployeeGUI(object):
         #   Create binding click function
         def selectEmployeeDetail(e):
             employee = getData()
-            frame = Tk()
-            frame = DetailEmployeeGUI(frame,employee)
-            self.root.destroy()
+            if employee:
+                frame = Tk()
+                frame = DetailEmployeeGUI(frame,employee)
+                self.root.destroy()
+            else:
+                pass
 
-        def 
+        #   Action employee
+        def subMenu(e):
+            iid = table_employee.identify_row(e.y)
+            if iid:
+                data = table_employee.selection_set(iid)
+            else:
+                pass
+
+            selecteEmployee = table_employee.focus()
+            value = table_employee.item(selecteEmployee, 'values')
+            employeeSelected = value
+            action.tk_popup(e.x_root,e.y_root)
+        
         #   Bindings
         table_employee.bind('<Double-1>', selectEmployeeDetail)
-        table_employee.bind('<Button-3>',)
-        
-
+    
     def loadData(self,employee_tree):
+        iid = 0
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
         #   Clear old record
@@ -140,8 +156,10 @@ class EmployeeGUI(object):
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            employee_tree.insert('','end',value=row)
-            employee_tree.insert
+            # print(row[1])
+            row[2] = row[2].strftime('%m/%d/%Y')
+            employee_tree.insert('',index = 'end', iid = row[0],value=row)
+            iid = iid + 1
 
     def clearTree(my_tree):
         my_tree.delete(*my_tree.get_children())
@@ -150,6 +168,12 @@ class EmployeeGUI(object):
         registry = Tk()
         registryForm = RegistryForm(registry)
         self.root.destroy()
+
+    def showFace(self):
+        pass
+
+    def deleteEmployee(self):
+        pass
 
 class Employee(object):
     def __init__(self, id, name, birth, email, late_date, off_date):
