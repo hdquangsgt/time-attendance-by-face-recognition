@@ -3,6 +3,7 @@ from tkinter import ttk, filedialog
 from .registry import RegistryForm
 from .timekeeping import TimekeepingGUI
 from .detail_employee import DetailEmployeeGUI
+from .add_face import AddFaceGUI
 import os
 import pandas as pd
 from datetime import datetime
@@ -71,12 +72,25 @@ class EmployeeGUI(object):
         #   Button registry employee
         btn_registry = Button(Employee_Frame,
             text = 'Thêm nhân viên',
-            width = 250,
             bg = 'blue',
-            compound = CENTER,
             font = ('time new roman', 14, 'bold'),
             command = self.registry)
-        btn_registry.place(x = 600, y = 100, width = 200, height = 30)
+        btn_registry.grid(row = 1, column = 0, padx = 20, pady = 25)
+
+        #   Button add face employee
+        btn_registry = Button(Employee_Frame,
+            text = 'Thêm khuôn mặt',
+            bg = 'green',
+            font = ('time new roman', 14, 'bold'),
+            command = self.addFace)
+        btn_registry.grid(row = 1, column = 1, padx = 20, pady = 25)
+
+        #   Button show data face employee
+        btn_registry = Button(Employee_Frame,
+            text = 'Xem dữ liệu khuôn mặt',
+            bg = 'yellow',
+            font = ('time new roman', 14, 'bold'))
+        btn_registry.grid(row = 1, column = 2, padx = 20, pady = 25)
 
         #   Table data employee
         table_frame = Frame(Employee_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
@@ -129,19 +143,6 @@ class EmployeeGUI(object):
                 self.root.destroy()
             else:
                 pass
-
-        #   Action employee
-        def subMenu(e):
-            iid = table_employee.identify_row(e.y)
-            if iid:
-                data = table_employee.selection_set(iid)
-            else:
-                pass
-
-            selecteEmployee = table_employee.focus()
-            value = table_employee.item(selecteEmployee, 'values')
-            employeeSelected = value
-            action.tk_popup(e.x_root,e.y_root)
         
         #   Bindings
         table_employee.bind('<Double-1>', selectEmployeeDetail)
@@ -168,6 +169,13 @@ class EmployeeGUI(object):
         registry = Tk()
         registryForm = RegistryForm(registry)
         self.root.destroy()
+
+    def addFace(self):
+        selected = table_employee.focus()
+        
+        addFaceFrame = Tk()
+        self.root.destroy()
+        AddFaceGUI(addFaceFrame)
 
     def showFace(self):
         pass
