@@ -77,20 +77,27 @@ class RegistryForm(object):
         df = pd.read_excel(filename)
         id = len(df.index) + 1
         name = self.name_entry.get()
-        print(self.generateUserId(name))
+        user_id = self.generateUserId(name)
         data = {
             'id': [id],
-            'user_id': [self.generateUserId(name)],
+            'user_id': [user_id],
             'name': [name],
             'birth': [self.birth_entry.get()],
             'email': [self.email_entry.get()]
         }
         # self.addDataExcel(data, filename)
-
+        self.createFolder(user_id)
+        
         #   Exit
         employeeFrame = Tk()
         EmployeeGUI(employeeFrame)
         self.root.destroy()
+
+    def createFolder(self,userId):
+        parent_dir = os.path.abspath('data/face_train')
+        path = os.path.join(parent_dir, userId)
+        os.makedirs(path) 
+
 
     def generateUserId(self,name):
         arrName = name.split()
