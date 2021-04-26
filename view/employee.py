@@ -101,7 +101,7 @@ class EmployeeGUI(object):
 
         table_employee = ttk.Treeview(
             table_frame, 
-            columns = ('id', 'name', 'birth', 'email', 'late_date', 'off_date','action'),
+            columns = ('id', 'name', 'birth', 'email'),
             xscrollcommand = scroll_x.set,
             yscrollcommand = scroll_y.set
         )
@@ -114,8 +114,6 @@ class EmployeeGUI(object):
         table_employee.heading('name', text = 'Họ và tên')
         table_employee.heading('birth', text = 'Ngày sinh')
         table_employee.heading('email', text = 'Email')
-        table_employee.heading('late_date', text = 'Số ngày đi trễ')
-        table_employee.heading('off_date', text = 'Số ngày nghỉ')
 
         table_employee['show'] = 'headings'
 
@@ -123,8 +121,6 @@ class EmployeeGUI(object):
         table_employee.column('name', width = 150)
         table_employee.column('birth', width = 100)
         table_employee.column('email', width = 150)
-        table_employee.column('late_date', width = 100)
-        table_employee.column('off_date', width = 100)
 
         self.loadData(table_employee)
         table_employee.pack(fill = BOTH, expand = 1)
@@ -143,10 +139,12 @@ class EmployeeGUI(object):
                 self.root.destroy()
             else:
                 pass
-        
+
         #   Bindings
         table_employee.bind('<Double-1>', selectEmployeeDetail)
-    
+
+        print(getData)
+        
     def loadData(self,employee_tree):
         iid = 0
         filename = os.path.abspath('data/Models/Employee.xlsx')
@@ -157,9 +155,9 @@ class EmployeeGUI(object):
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            # print(row[1])
-            row[2] = row[2].strftime('%m/%d/%Y')
-            employee_tree.insert('',index = 'end', iid = row[0],value=row)
+            row[3] = row[3].strftime('%m/%d/%Y')
+            data = [row[0],row[2],row[3],row[4]]
+            employee_tree.insert('',index = 'end', iid = row[0],value=data)
             iid = iid + 1
 
     def clearTree(my_tree):
@@ -171,8 +169,6 @@ class EmployeeGUI(object):
         self.root.destroy()
 
     def addFace(self):
-        selected = table_employee.focus()
-        
         addFaceFrame = Tk()
         self.root.destroy()
         AddFaceGUI(addFaceFrame)
@@ -184,12 +180,10 @@ class EmployeeGUI(object):
         pass
 
 class Employee(object):
-    def __init__(self, id, name, birth, email, late_date, off_date):
+    def __init__(self, id, name, birth, email):
         self.id = id
         self.name = name
         self.birth = birth
         self.email = email
-        self.late_date = late_date
-        self.off_date = off_date
         
         

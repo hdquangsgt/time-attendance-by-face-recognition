@@ -5,7 +5,7 @@ import cv2
 import os
 
 class AddFaceGUI(object):
-    def __init__(self, root, video_source = 0):
+    def __init__(self, root, video_source = 0, employee = None):
         self.appName = 'Thêm khuôn mặt nhân viên'
         self.root = root
         self.root.title(self.appName)
@@ -70,6 +70,7 @@ class MyVideoCapture:
                 return (isTrue, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             else:
                 return (isTrue, None)
+            cv2.imshow(frame)
         else:
             return (isTrue, None)
 
