@@ -140,10 +140,13 @@ class EmployeeGUI(object):
             else:
                 pass
 
+        self.employeeData = {}
+        def selectEmployeeData(e):
+            self.employeeData = getData()
+        
         #   Bindings
         table_employee.bind('<Double-1>', selectEmployeeDetail)
-
-        print(getData)
+        table_employee.bind('<ButtonRelease-1>',selectEmployeeData)
         
     def loadData(self,employee_tree):
         iid = 0
@@ -171,7 +174,7 @@ class EmployeeGUI(object):
     def addFace(self):
         addFaceFrame = Tk()
         self.root.destroy()
-        AddFaceGUI(addFaceFrame)
+        AddFaceGUI(root = addFaceFrame, employee = self.employeeData)
 
     def showFace(self):
         pass

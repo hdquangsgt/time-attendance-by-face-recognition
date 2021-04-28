@@ -1,10 +1,9 @@
 from tkinter import *
+from tkinter import messagebox
 from PIL import ImageTk, Image
 import os
 import pandas as pd
 from openpyxl import load_workbook
-# import xlwt
-# import xlrd
 
 class RegistryForm(object):
     def __init__(self, root):
@@ -62,42 +61,79 @@ class RegistryForm(object):
         Button(registry_frm, text='Đăng ký',width=20,bg='brown',fg='white',command=self.submit).place(x=300,y=250)
         
     def addDataExcel(self, data, filename):
-        df = pd.DataFrame(data)
-        print(df)
-        writer = pd.ExcelWriter(filename, engine='openpyxl')
-        writer.book = load_workbook(filename)
-        writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-        reader = pd.read_excel(filename)
-        df.to_excel(writer,index=False,header=False,startrow=len(reader)+1)
-        writer.save()
+        wb_obj = load_workbook(filename)
+        sheet_obj = wb_obj.active
+        row = sheet_obj.max_row
+        column = sheet_obj.max_column
+        for j in range(1, column+1):
+            sheet_obj.cell(row = row + 1, column= j, value=data[j-1])
+
+        wb_obj.save(filename)
+
+    def no_accent_vietnamese(self,s):
+        s = re.sub('[áàảãạăắằẳẵặâấầẩẫậ]', 'a', s)
+        s = re.sub('[ÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬ]', 'A', s)
+        s = re.sub('[éèẻẽẹêếềểễệ]', 'e', s)
+        s = re.sub('[ÉÈẺẼẸÊẾỀỂỄỆ]', 'E', s)
+        s = re.sub('[óòỏõọôốồổỗộơớờởỡợ]', 'o', s)
+        s = re.sub('[ÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢ]', 'O', s)
+        s = re.sub('[íìỉĩị]', 'i', s)
+        s = re.sub('[ÍÌỈĨỊ]', 'I', s)
+        s = re.sub('[úùủũụưứừửữự]', 'u', s)
+        s = re.sub('[ÚÙỦŨỤƯỨỪỬỮỰ]', 'U', s)
+        s = re.sub('[ýỳỷỹỵ]', 'y', s)
+        s = re.sub('[ÝỲỶỸỴ]', 'Y', s)
+        s = re.sub('đ', 'd', s)
+        s = re.sub('Đ', 'D', s)
+        return s
+    
+    def getIdLast(self,filename):
+        df = pd.read_excel(filename)
+        return df.iloc[-1]['id']
 
     def submit(self):
         from .employee import EmployeeGUI
         filename = os.path.abspath('data/Models/Employee.xlsx')
-        df = pd.read_excel(filename)
-        id = len(df.index) + 1
+        id = self.getIdLast(filename) + 1
         name = self.name_entry.get()
-        user_id = self.generateUserId(name)
-        data = {
-            'id': [id],
-            'user_id': [user_id],
-            'name': [name],
-            'birth': [self.birth_entry.get()],
-            'email': [self.email_entry.get()]
-        }
-        # self.addDataExcel(data, filename)
-        self.createFolder(user_id)
         
-        #   Exit
-        employeeFrame = Tk()
-        EmployeeGUI(employeeFrame)
-        self.root.destroy()
+        validated = self.validate(name,self.birth_entry.get(),self.email_entry.get())
+        
+        if (validated == ['','','']):
+            user_id = self.generateUserId(self.no_accent_vietnamese(name))
+            data = [
+                id,
+                user_id,
+                name,
+                self.birth_entry.get(),
+                self.email_entry.get()
+            ]
+            self.addDataExcel(data, filename)
+            self.createFolder(user_id)
+            #   Exit
+            employeeFrame = Tk()
+            EmployeeGUI(employeeFrame)
+            self.root.destroy()
+        else:
+            message = validated[0] + ' ' + validated[1] + ' ' + validated[2]
+            global errorFrame
+            errorFrame = Tk()
+            errorFrame.geometry('200x160')
+            errorFrame.title('Kiểm tra dữ liệu nhập')
+
+            Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 20, pady = 5)
+            Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 20, pady = 5)
+            Label(errorFrame, text = validated[2], fg = 'red').grid(row = 2, column = 0, padx = 20, pady = 5)
+
+            Button(errorFrame, text = 'Đã hiểu', command = self.deleteErrorFrame).grid(row = 3, column = 0, padx = 20, pady = 15)
+            return
+    def deleteErrorFrame(self):
+        errorFrame.destroy()
 
     def createFolder(self,userId):
         parent_dir = os.path.abspath('data/face_train')
         path = os.path.join(parent_dir, userId)
-        os.makedirs(path) 
-
+        os.makedirs(path)
 
     def generateUserId(self,name):
         arrName = name.split()
@@ -117,6 +153,26 @@ class RegistryForm(object):
                 count = count + 1
 
         return user_id
+
+    def validate(self,name,birth,email):
+        name_message = ''
+        birth_message = ''
+        email_message = ''
+
+        if(len(name) == 0 or len(birth) == 0 or len(email) == 0):
+            name_message = 'Tên không được để trống'
+            birth_message = 'Ngày sinh không được để trống'
+            email_message = 'Email không được để trống'
+            return [name_message,birth_message,email_message]
+        
+        year,month,day = map(str,birth.split('/'))
+        if(len(year) == 0 or len(month) == 0 or len(day) == 0):
+            birth_message = 'Định dạng ngày sinh không đúng'
+
+        if(not year.isnumeric() or not month.isnumeric() or not day.isnumeric()):
+            birth_message = 'Định dạng ngày sinh không đúng'
+
+        return [name_message,birth_message,email_message]
 
     def goToBack(self):
         from .employee import EmployeeGUI
