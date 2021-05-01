@@ -12,6 +12,7 @@ class AddFaceGUI(object):
         self.root.resizable(0,0)
         self.root['bg'] = 'black'
         self.video_source = video_source
+        self.employee = employee
 
         self.vid = MyVideoCapture(self.video_source)
         self.label = Label(self.root, text = self.appName, font = 15, bg = 'blue', fg = 'white').pack(side = TOP, fill = BOTH)
@@ -29,11 +30,13 @@ class AddFaceGUI(object):
         self.root.mainloop()
 
     def snapshot(self):
-        folder = os.path.abspath('data/images/')
+        user_id = self.employee[4]
+        folder = os.path.abspath('data/face_train/'+user_id)
         # Get a frame from the video source
         ret, frame = self.vid.get_frame()
+        name = "/frame-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg"
         if ret:
-            cv2.imwrite("frame-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+            cv2.imwrite(folder + name, cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
 
     def update(self):
         # Get a frame from the video source

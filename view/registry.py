@@ -115,10 +115,9 @@ class RegistryForm(object):
             EmployeeGUI(employeeFrame)
             self.root.destroy()
         else:
-            message = validated[0] + ' ' + validated[1] + ' ' + validated[2]
             global errorFrame
             errorFrame = Tk()
-            errorFrame.geometry('200x160')
+            errorFrame.geometry('300x160')
             errorFrame.title('Kiểm tra dữ liệu nhập')
 
             Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 20, pady = 5)
@@ -167,13 +166,13 @@ class RegistryForm(object):
         
         year,month,day = map(str,birth.split('/'))
         if(len(year) == 0 or len(month) == 0 or len(day) == 0):
-            birth_message = 'Định dạng ngày sinh không đúng'
+            birth_message = 'Định dạng ngày sinh không đúng yyyy/mm/dd'
         else:
             if(len(year) != 4 or len(month) != 2 or len(day) != 2):
                 birth_message = 'Hãy nhập đúng định dạng yyyy/mm/dd'
 
         if(not year.isnumeric() or not month.isnumeric() or not day.isnumeric()):
-            birth_message = 'Định dạng ngày sinh không đúng'
+            birth_message = 'Định dạng ngày sinh không đúng yyyy/mm/dd'
         else:
             if(int(month) > 12 or int(day) > 31 ):
                 birth_message = 'Định dạng ngày sinh không đúng'
