@@ -7,16 +7,16 @@ class LoginGUI(object):
     def __init__(self, root):
         self.root = root;
         self.root.title('Login');
-        self.root.geometry('920x650+0+0');
+        self.root.geometry('490x370+0+0');
 
         #========= All images =========#
         imageBG = os.path.abspath('view/images/background-login.png')
         imageIconUser = Image.open(os.path.abspath('view/images/icon-user.png'))
-        resizeUser = imageIconUser.resize((50,50), Image.ANTIALIAS)
+        resizeUser = imageIconUser.resize((25,25), Image.ANTIALIAS)
         imageIconPassword = Image.open(os.path.abspath('view/images/icon-password.png'))
-        resizePassword = imageIconPassword.resize((50,50), Image.ANTIALIAS)
+        resizePassword = imageIconPassword.resize((25,25), Image.ANTIALIAS)
         imageIconLogo = Image.open(os.path.abspath('view/images/logo.png'))
-        resizeLogo = imageIconLogo.resize((200,200), Image.ANTIALIAS)
+        resizeLogo = imageIconLogo.resize((100,100), Image.ANTIALIAS)
 
         self.bg_icon = PhotoImage(file=imageBG)
         self.user_icon = ImageTk.PhotoImage(resizeUser)
@@ -25,11 +25,11 @@ class LoginGUI(object):
 
         bg_lbl = Label(self.root, image = self.bg_icon).pack()
 
-        title = Label(self.root, text = 'Đăng nhập', font=('time new roman',40,'bold'), bg = 'blue', fg = 'white', bd = 10, relief = GROOVE)
+        title = Label(self.root, text = 'Đăng nhập', font=('time new roman',25,'bold'), bg = 'blue', fg = 'white', bd = 5, relief = GROOVE)
         title.place(x = 0, y = 0, relwidth = 1)
 
         Login_Frame = Frame(self.root, bg = 'white');
-        Login_Frame.place(x = 225, y = 150);
+        Login_Frame.place(x = 10, y = 60);
         
         logolbl = Label(Login_Frame, image = self.logo).grid(row = 0, column = 0, pady = 10)
 

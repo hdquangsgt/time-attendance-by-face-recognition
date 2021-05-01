@@ -5,8 +5,12 @@ from .timekeeping import TimekeepingGUI
 from .detail_employee import DetailEmployeeGUI
 from .add_face import AddFaceGUI
 import os
+from os import path
 import pandas as pd
 from datetime import datetime
+import PIL
+from PIL import Image,ImageTk
+import pytesseract
 import cv2
 
 class EmployeeGUI(object):
@@ -39,7 +43,7 @@ class EmployeeGUI(object):
                         fg = 'white',
                         compound = CENTER,
                         font = ('time new roman', 18, 'bold'))
-        btn_employee.grid(row = 20, column = 0, padx = 0, pady = 10)
+        btn_employee.grid(row = 1, column = 0, padx = 0, pady = 10)
 
         btn_keeptime = Button(Layout_Frame,
                         text = 'Quản lý chấm công',
@@ -49,7 +53,27 @@ class EmployeeGUI(object):
                         compound = CENTER,
                         command = onClickKeeptimeManage,
                         font = ('time new roman', 18, 'bold'))
-        btn_keeptime.grid(row = 21, column = 0, padx = 0, pady = 5)
+        btn_keeptime.grid(row = 2, column = 0, padx = 0, pady = 5)
+
+        btn_logtime = Button(Layout_Frame,
+                        text = 'Quản lý log time',
+                        width = 25,
+                        bg = 'gray',
+                        fg = 'white',
+                        compound = CENTER,
+                        command = onClickLogTime,
+                        font = ('time new roman', 18, 'bold'))
+        btn_logtime.grid(row = 3, column = 0, padx = 0, pady = 5)
+
+        btn_logout = Button(Layout_Frame,
+                        text = 'Đăng xuất',
+                        width = 25,
+                        bg = 'gray',
+                        fg = 'white',
+                        compound = CENTER,
+                        command = onClickKeeptimeManage,
+                        font = ('time new roman', 18, 'bold'))
+        btn_logout.grid(row = 4, column = 0, padx = 0, pady = 50)
 
         #   Title monitor
         title = Label(self.root, text='Quản lý nhân viên', font=('time new roman',20,'bold'),bg='blue',fg='white')
@@ -89,7 +113,8 @@ class EmployeeGUI(object):
         btn_registry = Button(Employee_Frame,
             text = 'Xem dữ liệu khuôn mặt',
             bg = 'yellow',
-            font = ('time new roman', 14, 'bold'))
+            font = ('time new roman', 14, 'bold'),
+            command = self.showFace)
         btn_registry.grid(row = 1, column = 2, padx = 20, pady = 25)
 
         #   Table data employee
@@ -152,14 +177,12 @@ class EmployeeGUI(object):
         iid = 0
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
-        #   Clear old record
-        # clearTree(employee_tree)
 
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
             row[3] = row[3].strftime('%m/%d/%Y')
-            data = [row[0],row[2],row[3],row[4]]
+            data = [row[0],row[2],row[3],row[4],row[1]]
             employee_tree.insert('',index = 'end', iid = row[0],value=data)
             iid = iid + 1
 
@@ -177,7 +200,8 @@ class EmployeeGUI(object):
         AddFaceGUI(root = addFaceFrame, employee = self.employeeData)
 
     def showFace(self):
-        pass
+        if(self.employeeData):
+            os.startfile(os.path.abspath('data/face_train/' + self.employeeData[4]))
 
     def deleteEmployee(self):
         pass
