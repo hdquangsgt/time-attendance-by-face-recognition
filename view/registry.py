@@ -142,14 +142,14 @@ class RegistryForm(object):
         for i in range(len(arrName)):
             if (i < len(arrName) - 1):
                 user_id = user_id + arrName[i][0]
-
+        root_name = user_id
         count = 1
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            if user_id in row[1]:
-                user_id = user_id + str(count)
+            if root_name in row[1]:
+                user_id = root_name + str(count)
                 count = count + 1
 
         return user_id
@@ -168,9 +168,15 @@ class RegistryForm(object):
         year,month,day = map(str,birth.split('/'))
         if(len(year) == 0 or len(month) == 0 or len(day) == 0):
             birth_message = 'Định dạng ngày sinh không đúng'
+        else:
+            if(len(year) != 4 or len(month) != 2 or len(day) != 2):
+                birth_message = 'Hãy nhập đúng định dạng yyyy/mm/dd'
 
         if(not year.isnumeric() or not month.isnumeric() or not day.isnumeric()):
             birth_message = 'Định dạng ngày sinh không đúng'
+        else:
+            if(int(month) > 12 or int(day) > 31 ):
+                birth_message = 'Định dạng ngày sinh không đúng'
 
         return [name_message,birth_message,email_message]
 
