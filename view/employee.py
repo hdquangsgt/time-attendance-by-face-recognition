@@ -61,7 +61,6 @@ class EmployeeGUI(object):
                         bg = 'gray',
                         fg = 'white',
                         compound = CENTER,
-                        command = onClickLogTime,
                         font = ('time new roman', 18, 'bold'))
         btn_logtime.grid(row = 3, column = 0, padx = 0, pady = 5)
 
@@ -71,7 +70,6 @@ class EmployeeGUI(object):
                         bg = 'gray',
                         fg = 'white',
                         compound = CENTER,
-                        command = onClickKeeptimeManage,
                         font = ('time new roman', 18, 'bold'))
         btn_logout.grid(row = 4, column = 0, padx = 0, pady = 50)
 
