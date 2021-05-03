@@ -8,10 +8,6 @@ import os
 from os import path
 import pandas as pd
 from datetime import datetime
-import PIL
-from PIL import Image,ImageTk
-import pytesseract
-import cv2
 
 class EmployeeGUI(object):
     def __init__(self, root):
@@ -36,6 +32,12 @@ class EmployeeGUI(object):
             frm_timekeeping = TimekeepingGUI(timekeeping)
             self.root.destroy()
 
+        def logout():
+            from .login import LoginGUI
+            logout = Tk()
+            frm_login = LoginGUI(logout)
+            self.root.destroy()
+
         btn_employee = Button(Layout_Frame,
                         text = 'Quản lý nhân viên',
                         width = 25,
@@ -46,7 +48,7 @@ class EmployeeGUI(object):
         btn_employee.grid(row = 1, column = 0, padx = 0, pady = 10)
 
         btn_keeptime = Button(Layout_Frame,
-                        text = 'Quản lý chấm công',
+                        text = 'Chấm công',
                         width = 25,
                         bg = 'gray',
                         fg = 'white',
@@ -55,69 +57,76 @@ class EmployeeGUI(object):
                         font = ('time new roman', 18, 'bold'))
         btn_keeptime.grid(row = 2, column = 0, padx = 0, pady = 5)
 
-        btn_logtime = Button(Layout_Frame,
-                        text = 'Quản lý log time',
-                        width = 25,
-                        bg = 'gray',
-                        fg = 'white',
-                        compound = CENTER,
-                        font = ('time new roman', 18, 'bold'))
-        btn_logtime.grid(row = 3, column = 0, padx = 0, pady = 5)
-
         btn_logout = Button(Layout_Frame,
                         text = 'Đăng xuất',
                         width = 25,
                         bg = 'gray',
                         fg = 'white',
                         compound = CENTER,
+                        command = logout,
                         font = ('time new roman', 18, 'bold'))
-        btn_logout.grid(row = 4, column = 0, padx = 0, pady = 50)
+        btn_logout.grid(row = 4, column = 0, padx = 0, pady = 150)
 
         #   Title monitor
         title = Label(self.root, text='Quản lý nhân viên', font=('time new roman',20,'bold'),bg='blue',fg='white')
         title.pack(side=TOP, fill=X)
 
+        #   Panel right Screen
+        Panel_right = Frame(self.root, bd = 4,bg = 'crimson', relief = RIDGE)
+        Panel_right.place(x = 500, y = 100, width = 840, height = 560)
+
         #   Employee Screen
-        Employee_Frame = Frame(self.root, bd=4,bg = 'crimson', relief = RIDGE)
-        Employee_Frame.place(x = 500, y = 100, width = 840, height = 550)
+        Employee_Frame = Frame(Panel_right,bd = 4,bg = 'crimson')
+        Employee_Frame.place(x = 0, y = 80, width = 839, height = 450)
+
+        #   Search Screen
+        Search_Frame = Frame(Panel_right, bg = 'crimson')
+        Search_Frame.place(x = 0, y = 20, width = 840, height = 80)
 
         #   Search
-        lbl_search = Label(Employee_Frame, text = 'Tìm kiếm nhân viên', bg = 'crimson', fg= 'white', font = ('time new roman', 14, 'bold'))
+        lbl_search = Label(Search_Frame, text = 'Tìm kiếm nhân viên', bg = 'crimson', fg= 'white', font = ('time new roman', 14, 'bold'))
         lbl_search.grid(row = 0, column = 0, padx = 20, pady = 10, sticky = 'w')
 
-        txt_search = Entry(Employee_Frame, width = 20, font = ('time new roman', 12), bd = 5, relief = GROOVE)
+        txt_search = Entry(Search_Frame, width = 20, font = ('time new roman', 12), bd = 5, relief = GROOVE)
         txt_search.grid(row = 0, column = 1, padx = 20, pady = 10)
 
-        btn_search = Button(Employee_Frame, text = 'Tìm kiếm', width = 10, pady = 5)
+        btn_search = Button(Search_Frame, text = 'Tìm kiếm', width = 10, font = ('time new roman', 12), pady = 5)
         btn_search.grid(row = 0, column = 2, padx = 20, pady = 10)
 
         #   Button registry employee
         btn_registry = Button(Employee_Frame,
             text = 'Thêm nhân viên',
             bg = 'blue',
-            font = ('time new roman', 14, 'bold'),
+            font = ('time new roman', 13, 'bold'),
             command = self.registry)
-        btn_registry.grid(row = 1, column = 0, padx = 20, pady = 25)
+        btn_registry.grid(row = 0, column = 0, padx = 25, pady = 25)
 
         #   Button add face employee
-        btn_registry = Button(Employee_Frame,
+        btn_addFace = Button(Employee_Frame,
             text = 'Thêm khuôn mặt',
             bg = 'green',
-            font = ('time new roman', 14, 'bold'),
+            font = ('time new roman', 13, 'bold'),
             command = self.addFace)
-        btn_registry.grid(row = 1, column = 1, padx = 20, pady = 25)
+        btn_addFace.grid(row = 0, column = 1, padx = 20, pady = 25)
 
         #   Button show data face employee
-        btn_registry = Button(Employee_Frame,
+        btn_showFace = Button(Employee_Frame,
             text = 'Xem dữ liệu khuôn mặt',
             bg = 'yellow',
-            font = ('time new roman', 14, 'bold'),
+            font = ('time new roman', 13, 'bold'),
             command = self.showFace)
-        btn_registry.grid(row = 1, column = 2, padx = 20, pady = 25)
+        btn_showFace.grid(row = 0, column = 2, padx = 20)
+
+        #   Button show data face employee
+        btn_trainFace = Button(Employee_Frame,
+            text = 'Training khuôn mặt',
+            bg = 'yellow',
+            font = ('time new roman', 13, 'bold'))
+        btn_trainFace.grid(row = 0, column = 3, padx = 20, pady = 25)
 
         #   Table data employee
         table_frame = Frame(Employee_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
-        table_frame.place(x = -2, y = 150, width = 830, height = 400)
+        table_frame.place(x = 0, y = 100, width = 830, height = 350)
 
         scroll_x = Scrollbar(table_frame,orient = HORIZONTAL)
         scroll_y = Scrollbar(table_frame,orient = VERTICAL)
@@ -193,9 +202,15 @@ class EmployeeGUI(object):
         self.root.destroy()
 
     def addFace(self):
-        addFaceFrame = Tk()
+        from .testcam1 import TestCam
+        import cv2
+        # addFaceFrame = Tk()
+        # self.root.destroy()
+        # AddFaceGUI(root = addFaceFrame, employee = self.employeeData)
         self.root.destroy()
-        AddFaceGUI(root = addFaceFrame, employee = self.employeeData)
+        frame = Tk()
+        addFaceFrame = TestCam(frame)
+        # frame.mainloop()
 
     def showFace(self):
         if(self.employeeData):

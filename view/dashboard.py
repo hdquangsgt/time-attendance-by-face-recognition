@@ -30,6 +30,12 @@ class Dashboard(object):
             frm_timekeeping = TimekeepingGUI(timekeeping)
             self.root.destroy()
 
+        def logout():
+            from .login import LoginGUI
+            logout = Tk()
+            frm_login = LoginGUI(logout)
+            self.root.destroy()
+
         Dashboard_Frame = Frame(Layout_Frame, bd=4, relief = RIDGE, bg = 'blue')
         Dashboard_Frame.place(x = 0, y = 45, relwidth = 1)
         btn_employee = Button(Dashboard_Frame, 
@@ -44,7 +50,7 @@ class Dashboard(object):
         btn_employee.grid(row = 0, column = 0, padx = 0, pady = 10)
 
         btn_keeptime = Button(Dashboard_Frame,
-                        text = 'Quản lý chấm công',
+                        text = 'Chấm công',
                         width = 15,
                         height = 5,
                         bg = 'gray',
@@ -52,7 +58,18 @@ class Dashboard(object):
                         compound = CENTER,
                         font = ('time new roman', 18, 'bold'),
                         command = onClickKeeptimeManage)
-        btn_keeptime.grid(row = 2, column = 0, padx = 0, pady = 15)
+        btn_keeptime.grid(row = 1, column = 0, padx = 0, pady = 15)
+
+        btn_logout = Button(Dashboard_Frame,
+                        text = 'Đăng xuất',
+                        width = 15,
+                        height = 5,
+                        bg = 'gray',
+                        fg = 'white',
+                        compound = CENTER,
+                        font = ('time new roman', 18, 'bold'),
+                        command = logout)
+        btn_logout.grid(row = 1, column = 1, padx = 15, pady = 15)
 
         
 

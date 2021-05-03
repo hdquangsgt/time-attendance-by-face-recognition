@@ -20,6 +20,8 @@ class AddFaceGUI(object):
         self.canvas = Canvas(self.root, width = self.vid.width, height = self.vid.height)
         self.canvas.pack()
 
+        self.showDisplay = Label(self.root)
+
         # Button that lets the user take a snapshot
         self.btn_snapshot=Button(self.root, text="Chụp", width = 50, command = self.snapshot)
         self.btn_snapshot.pack(anchor = CENTER, expand=True)
