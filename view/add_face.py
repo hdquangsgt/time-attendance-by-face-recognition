@@ -1,26 +1,22 @@
-from tkinter import *
-from PIL import Image, ImageTk
-import time
+import PIL
+from PIL import Image,ImageTk
+import pytesseract
 import cv2
+from tkinter import *
 import os
+import time
 
 class AddFaceGUI(object):
-    def __init__(self, root, video_source = 0, employee = None):
-        self.appName = 'Thêm khuôn mặt nhân viên'
+    def __init__(self, root, employee = None):
+        width, height = 800, 600
+        self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
         self.root = root
-        self.root.title(self.appName)
-        self.root.resizable(0,0)
-        self.root['bg'] = 'black'
-        self.video_source = video_source
-        self.employee = employee
-
-        self.vid = MyVideoCapture(self.video_source)
-        self.label = Label(self.root, text = self.appName, font = 15, bg = 'blue', fg = 'white').pack(side = TOP, fill = BOTH)
-
-        self.canvas = Canvas(self.root, width = self.vid.width, height = self.vid.height)
-        self.canvas.pack()
-
-        self.showDisplay = Label(self.root)
+        self.root.bind('<Escape>', lambda e: self.root.quit())
+        self.lmain = Label(self.root)
+        self.lmain.pack()
 
         # Button that lets the user take a snapshot
         self.btn_snapshot=Button(self.root, text="Chụp", width = 50, command = self.snapshot)
@@ -29,26 +25,40 @@ class AddFaceGUI(object):
         self.btn_back = Button(self.root, text='Trở về',width=20,bg='brown',fg='white',command=self.goToBack)
         self.btn_back.pack(anchor = CENTER, expand=True)
 
+        self.employee = employee
+        self.show_frame()
         self.root.mainloop()
+
+    def show_frame(self):
+        _, frame = self.cap.read()
+        frame = cv2.flip(frame, 1)
+        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        img = PIL.Image.fromarray(cv2image)
+        imgtk = ImageTk.PhotoImage(image=img)
+        self.lmain.imgtk = imgtk
+        self.lmain.configure(image=imgtk)
+        self.lmain.after(10, self.show_frame)
+
 
     def snapshot(self):
         user_id = self.employee[4]
         folder = os.path.abspath('data/face_train/'+user_id)
         # Get a frame from the video source
-        ret, frame = self.vid.get_frame()
+        ret, frame = self.get_frame()
         name = "/frame-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg"
         if ret:
             cv2.imwrite(folder + name, cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
 
-    def update(self):
-        # Get a frame from the video source
-        ret, frame = self.vid.get_frame()
-
-        if ret:
-            self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame))
-            self.canvas.create_image(0, 0, image = self.photo, anchor = NW)
-
-        self.root.after(self.delay, self.update)
+    def get_frame(self):
+        if self.cap.isOpened():
+            isTrue, frame = self.cap.read()
+            if isTrue:
+                # Return a boolean success flag and the current frame converted to BGR
+                return (isTrue, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            else:
+                return (isTrue, None)
+        else:
+            return (isTrue, None)
 
     def goToBack(self):
         from .employee import EmployeeGUI
@@ -56,31 +66,3 @@ class AddFaceGUI(object):
         self.root.destroy()
         employee = EmployeeGUI(frame)
 
-class MyVideoCapture:
-    def __init__(self, video_source = 0):
-        # Open the video source
-        self.vid = cv2.VideoCapture(video_source)
-        if not self.vid.isOpened():
-            raise ValueError("Unable to open video source", video_source)
-
-        # Get video source width and height
-        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
-        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    
-    def get_frame(self):
-        if self.vid.isOpened():
-            isTrue, frame = self.vid.read()
-            if isTrue:
-                # Return a boolean success flag and the current frame converted to BGR
-                return (isTrue, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-            else:
-                return (isTrue, None)
-            cv2.imshow(frame)
-        else:
-            return (isTrue, None)
-
-    # Release the video source when the object is destroyed
-    def __del__(self):
-        if self.vid.isOpened():
-            self.vid.release()
-    

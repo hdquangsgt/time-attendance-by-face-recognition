@@ -79,6 +79,39 @@ class EmployeeGUI(object):
         Employee_Frame = Frame(Panel_right,bd = 4,bg = 'crimson')
         Employee_Frame.place(x = 0, y = 80, width = 839, height = 450)
 
+        #   Table data employee
+        table_frame = Frame(Employee_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
+        table_frame.place(x = 0, y = 100, width = 830, height = 350)
+
+        scroll_x = Scrollbar(table_frame,orient = HORIZONTAL)
+        scroll_y = Scrollbar(table_frame,orient = VERTICAL)
+
+        table_employee = ttk.Treeview(
+            table_frame, 
+            columns = ('id', 'name', 'birth', 'email'),
+            xscrollcommand = scroll_x.set,
+            yscrollcommand = scroll_y.set
+        )
+        scroll_x.pack(side = BOTTOM, fill = X)
+        scroll_y.pack(side = RIGHT, fill = Y)
+        scroll_x.config(command = table_employee.xview)
+        scroll_y.config(command = table_employee.yview)
+
+        table_employee.heading('id', text = 'STT')
+        table_employee.heading('name', text = 'Họ và tên')
+        table_employee.heading('birth', text = 'Ngày sinh')
+        table_employee.heading('email', text = 'Email')
+
+        table_employee['show'] = 'headings'
+
+        table_employee.column('id', width = 100)
+        table_employee.column('name', width = 150)
+        table_employee.column('birth', width = 100)
+        table_employee.column('email', width = 150)
+
+        self.loadData(table_employee)
+        table_employee.pack(fill = BOTH, expand = 1)
+
         #   Search Screen
         Search_Frame = Frame(Panel_right, bg = 'crimson')
         Search_Frame.place(x = 0, y = 20, width = 840, height = 80)
@@ -87,7 +120,12 @@ class EmployeeGUI(object):
         lbl_search = Label(Search_Frame, text = 'Tìm kiếm nhân viên', bg = 'crimson', fg= 'white', font = ('time new roman', 14, 'bold'))
         lbl_search.grid(row = 0, column = 0, padx = 20, pady = 10, sticky = 'w')
 
-        txt_search = Entry(Search_Frame, width = 20, font = ('time new roman', 12), bd = 5, relief = GROOVE)
+        def callback(event):
+            self.loadData(table_employee,event.get())
+
+        keyword = StringVar()
+        keyword.trace("w", lambda name, index, mode, keyword = keyword: callback(keyword))
+        txt_search = Entry(Search_Frame, width = 20, font = ('time new roman', 12), bd = 5, relief = GROOVE, textvariable = keyword)
         txt_search.grid(row = 0, column = 1, padx = 20, pady = 10)
 
         btn_search = Button(Search_Frame, text = 'Tìm kiếm', width = 10, font = ('time new roman', 12), pady = 5)
@@ -124,39 +162,6 @@ class EmployeeGUI(object):
             font = ('time new roman', 13, 'bold'))
         btn_trainFace.grid(row = 0, column = 3, padx = 20, pady = 25)
 
-        #   Table data employee
-        table_frame = Frame(Employee_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
-        table_frame.place(x = 0, y = 100, width = 830, height = 350)
-
-        scroll_x = Scrollbar(table_frame,orient = HORIZONTAL)
-        scroll_y = Scrollbar(table_frame,orient = VERTICAL)
-
-        table_employee = ttk.Treeview(
-            table_frame, 
-            columns = ('id', 'name', 'birth', 'email'),
-            xscrollcommand = scroll_x.set,
-            yscrollcommand = scroll_y.set
-        )
-        scroll_x.pack(side = BOTTOM, fill = X)
-        scroll_y.pack(side = RIGHT, fill = Y)
-        scroll_x.config(command = table_employee.xview)
-        scroll_y.config(command = table_employee.yview)
-
-        table_employee.heading('id', text = 'STT')
-        table_employee.heading('name', text = 'Họ và tên')
-        table_employee.heading('birth', text = 'Ngày sinh')
-        table_employee.heading('email', text = 'Email')
-
-        table_employee['show'] = 'headings'
-
-        table_employee.column('id', width = 100)
-        table_employee.column('name', width = 150)
-        table_employee.column('birth', width = 100)
-        table_employee.column('email', width = 150)
-
-        self.loadData(table_employee)
-        table_employee.pack(fill = BOTH, expand = 1)
-
         #   Get data record
         def getData():
             selected = table_employee.focus()
@@ -180,10 +185,14 @@ class EmployeeGUI(object):
         table_employee.bind('<Double-1>', selectEmployeeDetail)
         table_employee.bind('<ButtonRelease-1>',selectEmployeeData)
         
-    def loadData(self,employee_tree):
+    def loadData(self,employee_tree, keyword = None):
+        self.clearTree(employee_tree)
         iid = 0
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
+        
+        if (keyword):
+            df = df[df['name'].str.lower().str.contains(keyword)]
 
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
@@ -193,7 +202,7 @@ class EmployeeGUI(object):
             employee_tree.insert('',index = 'end', iid = row[0],value=data)
             iid = iid + 1
 
-    def clearTree(my_tree):
+    def clearTree(self,my_tree):
         my_tree.delete(*my_tree.get_children())
 
     def registry(self):
@@ -202,15 +211,10 @@ class EmployeeGUI(object):
         self.root.destroy()
 
     def addFace(self):
-        from .testcam1 import TestCam
         import cv2
-        # addFaceFrame = Tk()
-        # self.root.destroy()
-        # AddFaceGUI(root = addFaceFrame, employee = self.employeeData)
         self.root.destroy()
         frame = Tk()
-        addFaceFrame = TestCam(frame)
-        # frame.mainloop()
+        addFaceFrame = AddFaceGUI(frame,employee = self.employeeData)
 
     def showFace(self):
         if(self.employeeData):
@@ -219,11 +223,8 @@ class EmployeeGUI(object):
     def deleteEmployee(self):
         pass
 
-class Employee(object):
-    def __init__(self, id, name, birth, email):
-        self.id = id
-        self.name = name
-        self.birth = birth
-        self.email = email
+    def searchEmployee(self):
+        keyword = StringVar()
+        
         
         
