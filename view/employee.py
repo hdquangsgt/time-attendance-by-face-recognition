@@ -8,6 +8,7 @@ import os
 from os import path
 import pandas as pd
 from datetime import datetime
+from pathlib import Path
 
 class EmployeeGUI(object):
     def __init__(self, root):
@@ -213,11 +214,13 @@ class EmployeeGUI(object):
     def addFace(self):
         import cv2
         if(self.employeeData):
+            Path(os.path.abspath('data/face_train/' + self.employeeData[4])).mkdir(parents=True, exist_ok=True)
             addFaceFrame = AddFaceGUI(employee = self.employeeData)
         return
 
     def showFace(self):
         if(self.employeeData):
+            Path(os.path.abspath('data/face_train/' + self.employeeData[4])).mkdir(parents=True, exist_ok=True)
             os.startfile(os.path.abspath('data/face_train/' + self.employeeData[4]))
 
     def deleteEmployee(self):
