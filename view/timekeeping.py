@@ -1,6 +1,8 @@
 from tkinter import *
+from tkcalendar import *
 import os
 import pandas as pd
+from datetime import date
 
 class TimekeepingGUI(object):
     def __init__(self, root):
@@ -69,19 +71,26 @@ class TimekeepingGUI(object):
         Timekeeping_Frame = Frame(self.root, bd = 4, relief = RIDGE)
         Timekeeping_Frame.place(x = 550, y = 100, width = 840, height = 560)
 
-        #   Button registry employee
+        #   Select datetime picker
+        lbl_timepicker = Label(Timekeeping_Frame, text = 'Ngày chấm công', font=('time new roman',14,'bold'))
+        lbl_timepicker.grid(row = 0, column = 0, pady = 25)
+
+        timepicker = DateEntry(Timekeeping_Frame, width = 15, background = 'blue', foregroundcolor = 'red', borderWidth = 3)
+        timepicker.grid(row = 0, column = 1, pady = 25)
+
+        #   Button checkin employee
         btn_registry = Button(Timekeeping_Frame,
             text = 'Checkin',
             bg = 'blue',
             font = ('time new roman', 13, 'bold'))
-        btn_registry.grid(row = 1, column = 0, pady = 25)
+        btn_registry.grid(row = 0, column = 2, pady = 25)
 
-        #   Button add face employee
+        #   Button checkout employee
         btn_addFace = Button(Timekeeping_Frame,
             text = 'Check out',
             bg = 'green',
             font = ('time new roman', 13, 'bold'))
-        btn_addFace.grid(row = 1, column = 1, pady = 25)
+        btn_addFace.grid(row = 0, column = 3, pady = 25)
 
         #   Table data timekeeping
         table_frame = Frame(Timekeeping_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
@@ -92,7 +101,7 @@ class TimekeepingGUI(object):
 
         table_timekeeping = ttk.Treeview(
             table_frame, 
-            columns = ('id', 'name', 'user_id', 'date_logtime', 'checkin_time','checkout_time'),
+            columns = ('date_logtime', 'user_id', 'checkin_time','checkout_time'),
             xscrollcommand = scroll_x.set,
             yscrollcommand = scroll_y.set
         )
@@ -101,10 +110,9 @@ class TimekeepingGUI(object):
         scroll_x.config(command = table_timekeeping.xview)
         scroll_y.config(command = table_timekeeping.yview)
 
-        table_timekeeping.heading('id', text = 'STT')
+        table_timekeeping.heading('date_logtime', text = 'Ngày chấm công')
         table_timekeeping.heading('user_id', text = 'Mã nhân viên')
         table_timekeeping.heading('name', text = 'Họ và tên')
-        table_timekeeping.heading('date_logtime', text = 'Ngày chấm công')
         table_timekeeping.heading('checkin_time', text = 'Giờ checkin')
         table_timekeeping.heading('checkout_time', text = 'Giờ checkout')
 

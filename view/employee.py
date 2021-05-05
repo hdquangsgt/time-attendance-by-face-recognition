@@ -28,15 +28,15 @@ class EmployeeGUI(object):
         layout_title.grid(row = 0, columnspan = 2, pady = 50)
 
         def onClickKeeptimeManage():
+            self.root.destroy()
             timekeeping = Tk()
             frm_timekeeping = TimekeepingGUI(timekeeping)
-            self.root.destroy()
 
         def logout():
             from .login import LoginGUI
+            self.root.destroy()
             logout = Tk()
             frm_login = LoginGUI(logout)
-            self.root.destroy()
 
         btn_employee = Button(Layout_Frame,
                         text = 'Quản lý nhân viên',
@@ -206,9 +206,9 @@ class EmployeeGUI(object):
         my_tree.delete(*my_tree.get_children())
 
     def registry(self):
+        self.root.destroy()
         registry = Tk()
         registryForm = RegistryForm(registry)
-        self.root.destroy()
 
     def addFace(self):
         import cv2

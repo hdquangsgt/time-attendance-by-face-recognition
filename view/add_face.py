@@ -27,7 +27,6 @@ class AddFaceGUI(object):
 
         self.employee = employee
         self.show_frame()
-        self.root.mainloop()
 
     def detect_face(self, frame):
         mpFaceDetect = mp.solutions.face_detection
@@ -48,11 +47,9 @@ class AddFaceGUI(object):
 
     def show_frame(self):
         _, frame = self.cap.read()
-
         boxx = self.detect_face(frame)
 
         for i in boxx:
-                                
             self.fancyBox(frame, i)
             # cv2.putText(frame, f'{int(detection.score[0] * 100)}%', (i[0], i[1] - 20), cv2.FONT_HERSHEY_PLAIN, 2
             #         , (255, 0, 255), 2)
@@ -63,7 +60,7 @@ class AddFaceGUI(object):
 
         self.lmain.imgtk = imgtk
         self.lmain.configure(image=imgtk)
-        self.lmain.after(10, self.show_frame)
+        self.lmain.after(20, self.show_frame)
 
     def fancyBox(self, img, bbox, l=30, t=2, rt=1):
         x, y, w, h = bbox
@@ -110,7 +107,8 @@ class AddFaceGUI(object):
 
     def goToBack(self):
         from .employee import EmployeeGUI
-        frame = Tk()
         self.root.destroy()
+        cv2.destroyAllWindows()
+        frame = Tk()
         employee = EmployeeGUI(frame)
 
