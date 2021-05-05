@@ -124,12 +124,17 @@ class EmployeeGUI(object):
         def callback(event):
             self.loadData(table_employee,event.get())
 
-        keyword = StringVar()
-        keyword.trace("w", lambda name, index, mode, keyword = keyword: callback(keyword))
-        txt_search = Entry(Search_Frame, width = 20, font = ('time new roman', 12), bd = 5, relief = GROOVE, textvariable = keyword)
+        def set_text(text):
+            txt_search.delete(0,END)
+            txt_search.insert(0,text)
+            return
+
+        self.keyword = StringVar()
+        self.keyword.trace("w", lambda name, index, mode, keyword = self.keyword: callback(self.keyword))
+        txt_search = Entry(Search_Frame, width = 20, font = ('time new roman', 12), bd = 5, relief = GROOVE, textvariable = self.keyword)
         txt_search.grid(row = 0, column = 1, padx = 20, pady = 10)
 
-        btn_search = Button(Search_Frame, text = 'Tìm kiếm', width = 10, font = ('time new roman', 12), pady = 5)
+        btn_search = Button(Search_Frame, text = 'Xóa', width = 10, font = ('time new roman', 10), pady = 5, command = lambda:set_text(""))
         btn_search.grid(row = 0, column = 2, padx = 20, pady = 10)
 
         #   Button registry employee
@@ -230,8 +235,6 @@ class EmployeeGUI(object):
     def deleteEmployee(self):
         pass
 
-    def searchEmployee(self):
-        keyword = StringVar()
         
         
         
