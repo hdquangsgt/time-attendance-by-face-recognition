@@ -160,7 +160,8 @@ class EmployeeGUI(object):
         btn_trainFace = Button(Employee_Frame,
             text = 'Training khuôn mặt',
             bg = 'yellow',
-            font = ('time new roman', 13, 'bold'))
+            font = ('time new roman', 13, 'bold'),
+            command = self.trainFace)
         btn_trainFace.grid(row = 0, column = 3, padx = 20, pady = 25)
 
         #   Get data record
@@ -222,6 +223,9 @@ class EmployeeGUI(object):
         if(self.employeeData):
             Path(os.path.abspath('data/face_train/' + self.employeeData[4])).mkdir(parents=True, exist_ok=True)
             os.startfile(os.path.abspath('data/face_train/' + self.employeeData[4]))
+
+    def trainFace(self):
+        print("test")
 
     def deleteEmployee(self):
         pass
