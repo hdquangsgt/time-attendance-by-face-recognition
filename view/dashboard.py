@@ -21,20 +21,20 @@ class Dashboard(object):
         layout_title.place(x = 0, y = 0, relwidth = 1)
 
         def onClickEmployeeManage():
+            self.root.destroy()
             employee = Tk()
             frm_employee = EmployeeGUI(employee)
-            self.root.destroy()
 
         def onClickKeeptimeManage():
+            self.root.destroy()
             timekeeping = Tk()
             frm_timekeeping = TimekeepingGUI(timekeeping)
-            self.root.destroy()
 
         def logout():
             from .login import LoginGUI
+            self.root.destroy()
             logout = Tk()
             frm_login = LoginGUI(logout)
-            self.root.destroy()
 
         Dashboard_Frame = Frame(Layout_Frame, bd=4, relief = RIDGE, bg = 'blue')
         Dashboard_Frame.place(x = 0, y = 45, relwidth = 1)

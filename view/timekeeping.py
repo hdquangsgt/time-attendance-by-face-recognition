@@ -24,15 +24,15 @@ class TimekeepingGUI(object):
 
         def onClickEmployeeManage():
             from .employee import EmployeeGUI
+            self.root.destroy()
             employee = Tk()
             frm_employee = EmployeeGUI(employee)
-            self.root.destroy()
 
         def logout():
             from .login import LoginGUI
+            self.root.destroy()
             logout = Tk()
             frm_login = LoginGUI(logout)
-            self.root.destroy()
 
         btn_employee = Button(Layout_Frame,
                         text = 'Quản lý nhân viên',
@@ -75,7 +75,12 @@ class TimekeepingGUI(object):
         lbl_timepicker = Label(Timekeeping_Frame, text = 'Ngày chấm công', font=('time new roman',14,'bold'))
         lbl_timepicker.grid(row = 0, column = 0, pady = 25)
 
-        timepicker = DateEntry(Timekeeping_Frame, width = 15, background = 'blue', foregroundcolor = 'red', borderWidth = 3)
+        timepicker = DateEntry(Timekeeping_Frame, 
+                            width = 14, 
+                            background = 'blue', 
+                            font=('time new roman',14,'bold'), 
+                            foregroundcolor = 'red',
+                            borderWidth = 3)
         timepicker.grid(row = 0, column = 1, pady = 25)
 
         #   Button checkin employee
@@ -83,14 +88,14 @@ class TimekeepingGUI(object):
             text = 'Checkin',
             bg = 'blue',
             font = ('time new roman', 13, 'bold'))
-        btn_registry.grid(row = 0, column = 2, pady = 25)
+        btn_registry.grid(row = 1, column = 0, padx = 25, pady = 15)
 
         #   Button checkout employee
         btn_addFace = Button(Timekeeping_Frame,
             text = 'Check out',
             bg = 'green',
             font = ('time new roman', 13, 'bold'))
-        btn_addFace.grid(row = 0, column = 3, pady = 25)
+        btn_addFace.grid(row = 1, column = 1, padx = 25, pady = 15)
 
         #   Table data timekeeping
         table_frame = Frame(Timekeeping_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
@@ -112,16 +117,13 @@ class TimekeepingGUI(object):
 
         table_timekeeping.heading('date_logtime', text = 'Ngày chấm công')
         table_timekeeping.heading('user_id', text = 'Mã nhân viên')
-        table_timekeeping.heading('name', text = 'Họ và tên')
         table_timekeeping.heading('checkin_time', text = 'Giờ checkin')
         table_timekeeping.heading('checkout_time', text = 'Giờ checkout')
 
         table_timekeeping['show'] = 'headings'
 
-        table_timekeeping.column('id', width = 100)
-        table_timekeeping.column('user_id', width = 150)
-        table_timekeeping.column('name', width = 150)
         table_timekeeping.column('date_logtime', width = 100)
+        table_timekeeping.column('user_id', width = 150)
         table_timekeeping.column('checkin_time', width = 150)
         table_timekeeping.column('checkout_time', width = 100)
 
@@ -136,5 +138,5 @@ class TimekeepingGUI(object):
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            employee_tree.insert('',index = 'end', iid = row[0],value = row)
+            employee_tree.insert('',index = 'end',value = row)
             iid = iid + 1

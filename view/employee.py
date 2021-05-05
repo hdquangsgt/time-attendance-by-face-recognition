@@ -212,9 +212,9 @@ class EmployeeGUI(object):
 
     def addFace(self):
         import cv2
-        self.root.destroy()
-        frame = Tk()
-        addFaceFrame = AddFaceGUI(frame,employee = self.employeeData)
+        if(self.employeeData):
+            addFaceFrame = AddFaceGUI(employee = self.employeeData)
+        return
 
     def showFace(self):
         if(self.employeeData):
