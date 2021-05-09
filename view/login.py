@@ -76,6 +76,7 @@ class LoginGUI(object):
                             command=self.submit)
         btnSubmit.grid(row=3,column=1,pady=10)
 
+        btnSubmit.bind('<Button-1>', self.submit)
         self.user_entry.bind('<Return>',self.submit)
         self.pass_entry.bind('<Return>',self.submit)
 

@@ -33,7 +33,7 @@ class RegistryForm(object):
                             text='Đăng ký nhân viên',
                             bg = bg_color,
                             fg = 'white',
-                            compound = CENTER, 
+                            compound = CENTER,
                             bd = 10, 
                             relief = GROOVE,
                             font = ('time new roman', 24, 'bold'))
