@@ -1,7 +1,10 @@
 from tkinter import *
+from tkinter import messagebox
 from PIL import ImageTk, Image
 from .dashboard import Dashboard
 import os
+import hashlib, secrets
+import pandas as pd
 
 class LoginGUI(object):
     def __init__(self, root):
@@ -38,7 +41,7 @@ class LoginGUI(object):
         logolbl = Label(Login_Frame, image = self.logo).grid(row = 0, column = 0, pady = 10)
 
         lbluser = Label(Login_Frame,
-                        text = 'Họ và tên',
+                        text = 'Tài khoản',
                         image = self.user_icon,
                         compound = LEFT,
                         font = ('time new roman',20,'bold'),
@@ -63,12 +66,32 @@ class LoginGUI(object):
                             activebackground="white",
                             font=('time new roman',14,'bold'),
                             pady=10,
-                            command=self.submit).grid(row=3,column=1,pady=10)
-    def checkLogin(usename, password):
-        if(usename == 'username' and password == 'password'):
-            return;
+                            command=self.submit(txtuser=txtuser, txtpass=txtpass)).grid(row=3,column=1,pady=10)
 
-    def submit(self):
-        self.root.destroy()
-        window = Tk()
-        dashboard = Dashboard(window)
+    def checkLogin(self, username, password):
+
+        filename = 'data/Models/User.xlsx'
+        df = pd.read_excel(filename)
+
+        user_list = df['user'].tolist()
+        password_list = df['password'].tolist()
+
+        flagLogin = 0
+
+        for u, p in zip(user_list, password_list):
+            if username == u and hashlib.sha256(password.encode('utf-8')).hexdigest() == p:
+                flagLogin = 1
+
+        return flagLogin
+
+    def submit(self, txtuser, txtpass):
+        flagLogin = self.checkLogin(username=txtuser, password=txtpass)
+
+        
+        if flagLogin == 1:
+            self.root.destroy()
+            window = Tk()
+            dashboard = Dashboard(window)
+        else:
+            messagebox.showerror(title="Login Fail", message="Your username and password doesn't match! Please try again.")
+        
