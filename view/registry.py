@@ -15,6 +15,8 @@ class RegistryForm(object):
         self.root.geometry('700x450+0+0')
         self.root.resizable(False, False)
         
+        bg_color = '#990099'
+
         self.name_entry = ''
         self.email_entry = ''
 
@@ -29,7 +31,7 @@ class RegistryForm(object):
 
         registry_title = Label(self.root, 
                             text='Đăng ký nhân viên',
-                            bg = 'blue',
+                            bg = bg_color,
                             fg = 'white',
                             compound = CENTER, 
                             bd = 10, 

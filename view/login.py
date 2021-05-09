@@ -59,7 +59,7 @@ class LoginGUI(object):
                         compound = LEFT,
                         font = ('time new roman',20,'bold'),
                         bg = 'white').grid(row = 2, column = 0, padx = 20, pady = 10)
-        self.pass_entry = Entry(Login_Frame, bd=5, relief=GROOVE, font=('time new roman',15))
+        self.pass_entry = Entry(Login_Frame, bd=5, relief=GROOVE, font=('time new roman',15), show = '*')
         self.pass_entry.grid(row=2,column=1,padx=20)
 
         btnSubmit = Button(Login_Frame,
@@ -73,7 +73,11 @@ class LoginGUI(object):
                             activebackground="white",
                             font=('time new roman',14,'bold'),
                             pady=10,
-                            command=self.submit).grid(row=3,column=1,pady=10)
+                            command=self.submit)
+        btnSubmit.grid(row=3,column=1,pady=10)
+
+        self.user_entry.bind('<Return>',self.submit)
+        self.pass_entry.bind('<Return>',self.submit)
 
     def checkLogin(self, username, password):
         filename = 'data/Models/User.xlsx'
@@ -85,13 +89,12 @@ class LoginGUI(object):
         flagLogin = 0
 
         for u, p in zip(user_list, password_list):
-            if username == u and hashlib.sha256(password.encode('utf-8')).hexdigest() == p:
+            if username.strip() == u and hashlib.sha256(password.strip().encode('utf-8')).hexdigest() == p:
                 flagLogin = 1
 
         return flagLogin
 
-    def submit(self):
-        print(self.user_entry.get())
+    def submit(self, event):
         flagLogin = self.checkLogin(username=self.user_entry.get(), password=self.pass_entry.get())
 
         if flagLogin == 1:
