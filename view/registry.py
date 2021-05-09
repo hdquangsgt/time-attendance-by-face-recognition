@@ -6,14 +6,16 @@ import pandas as pd
 from openpyxl import load_workbook
 import re
 import datetime
+from .datepicker import CustomDateEntry
 
 class RegistryForm(object):
     def __init__(self, root):
         self.root = root
         self.root.title('Quản lý nhân viên')
         self.root.geometry('700x450+0+0')
+        self.root.resizable(False, False)
+        
         self.name_entry = ''
-        self.birth_entry = ''
         self.email_entry = ''
 
         #========= All images =========#
@@ -49,9 +51,10 @@ class RegistryForm(object):
         birth_lbl = Label(registry_frm, text="Ngày sinh", width = 20, compound = LEFT, font=("bold", 10))
         birth_lbl.grid(row = 2, column = 1, padx = 10, pady = 10)
 
-        self.birth_entry = Entry(registry_frm, width = 40)
+        self.birth_entry = CustomDateEntry(registry_frm)
+        self.birth_entry._set_text(self.birth_entry._date.strftime('%d/%m/%Y'))
         self.birth_entry.grid(row = 2, column = 2, padx = 10, pady = 10)
-
+        
         #   Field email
         email_lbl = Label(registry_frm, text="Email", width = 20, compound = LEFT, font=("bold", 10))
         email_lbl.grid(row = 3, column = 1, padx = 10, pady = 10)
@@ -105,7 +108,7 @@ class RegistryForm(object):
         id = self.getIdLast(filename) + 1
         name = self.name_entry.get()
         
-        validated = self.validate(name,self.birth_entry.get(),self.email_entry.get())
+        validated = self.validate(name,self.email_entry.get())
         
         if (validated == ['','','']):
             user_id = self.generateUserId(self.no_accent_vietnamese(name))
@@ -113,7 +116,7 @@ class RegistryForm(object):
                 id,
                 user_id,
                 name,
-                self.birth_entry.get(),
+                self.birth_entry.get_date(),
                 self.email_entry.get()
             ]
             self.addDataExcel(data, filename)
@@ -125,7 +128,7 @@ class RegistryForm(object):
         else:
             global errorFrame
             errorFrame = Tk()
-            errorFrame.geometry('300x160')
+            errorFrame.geometry('180x80')
             errorFrame.title('Kiểm tra dữ liệu nhập')
 
             if(validated[0]):
@@ -165,49 +168,28 @@ class RegistryForm(object):
 
         return user_id
 
-    def validate(self,name,birth,email):
+    def validate(self,name,email):
         name_message = ''
-        birth_message = ''
         email_message = ''
         input = {
             'name' : name,
-            'birth': birth,
             'email': email
         }
         if(self.checkEmpty(input)):
             return self.checkEmpty(input)
         
-        year,month,day = map(str,birth.split('/'))
-        if(len(year) == 0 or len(month) == 0 or len(day) == 0):
-            birth_message = 'Định dạng ngày sinh không đúng yyyy/mm/dd'
-        else:
-            if(len(year) != 4 or len(month) != 2 or len(day) != 2):
-                birth_message = 'Hãy nhập đúng định dạng yyyy/mm/dd'
-
-        if(not year.isnumeric() or not month.isnumeric() or not day.isnumeric()):
-            birth_message = 'Định dạng ngày sinh không đúng yyyy/mm/dd'
-        else:
-            if(int(month) > 12 or int(day) > 31 ):
-                birth_message = 'Định dạng ngày sinh không đúng'
-
         regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
         if(re.search(regex,email)):   
             email_message = 'Định dạng email không hợp lệ'
-        return [name_message,birth_message,email_message]
+        return [name_message,email_message]
 
     def checkEmpty(self,input):
         result = []
         if(len(input['name']) == 0):
             result.append('Tên không được để trống')
 
-        if(len(input['birth']) == 0):
-            result.append('Ngày sinh không được để trống')
-
         if(len(input['email']) == 0):
             result.append('Email không được để trống')
 
         return result
-
-    def checkDatetime(self,date):
-        isinstance(x, datetime.date)
 

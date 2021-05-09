@@ -15,6 +15,7 @@ class EmployeeGUI(object):
         self.root = root
         self.root.title('Quản lý nhân viên')
         self.root.geometry('1350x700+0+0')
+        self.root.resizable(False, False)
         
         bg_color = '#990099'
         

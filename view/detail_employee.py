@@ -5,7 +5,10 @@ class DetailEmployeeGUI(object):
         self.root = root
         self.root.title('Quản lý nhân viên')
         self.root.geometry('1350x700+0+0')
+        self.root.resizable(False, False)
+        
         print(employee)
+
         #   Panel left
         panel_left = Frame(self.root, bd = 4, relief = RIDGE, bg = 'gray')
         panel_left.place(x = 20, y = 100, width = 400, height = 560)

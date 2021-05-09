@@ -11,6 +11,7 @@ class LoginGUI(object):
         self.root = root;
         self.root.title('Đăng nhập');
         self.root.geometry('490x380+0+0');
+        self.root.resizable(False, False)
 
         #========= All images =========#
         imageBG = Image.open(os.path.abspath('view/images/bg-login.png'))
@@ -26,6 +27,9 @@ class LoginGUI(object):
         self.user_icon = ImageTk.PhotoImage(resizeUser)
         self.password_icon = ImageTk.PhotoImage(resizePassword)
         self.logo = ImageTk.PhotoImage(resizeLogo)
+
+        self.txtuser = ''
+        self.txtpass = ''
 
         title = Label(self.root, text = 'Đăng nhập', font = ('time new roman',25,'bold'), fg = 'white', image = self.bg_login, compound='center')
         title.pack()
@@ -46,14 +50,17 @@ class LoginGUI(object):
                         compound = LEFT,
                         font = ('time new roman',20,'bold'),
                         bg = 'white').grid(row = 1, column = 0, padx = 20, pady = 10)
-        txtuser = Entry(Login_Frame,bd=5,relief=GROOVE,font=('',15)).grid(row=1,column=1,padx=20)
+        self.user_entry = Entry(Login_Frame, bd=5, relief=GROOVE, font=('time new roman',15))
+        self.user_entry.grid(row=1,column=1,padx=20)
+
         lblpass = Label(Login_Frame,
                         text = 'Mật khẩu',
                         image = self.password_icon,
                         compound = LEFT,
                         font = ('time new roman',20,'bold'),
                         bg = 'white').grid(row = 2, column = 0, padx = 20, pady = 10)
-        txtpass = Entry(Login_Frame,bd=5,relief=GROOVE,font=('',15)).grid(row=2,column=1,padx=20)
+        self.pass_entry = Entry(Login_Frame, bd=5, relief=GROOVE, font=('time new roman',15))
+        self.pass_entry.grid(row=2,column=1,padx=20)
 
         btnSubmit = Button(Login_Frame,
                             bd=0,
@@ -66,10 +73,9 @@ class LoginGUI(object):
                             activebackground="white",
                             font=('time new roman',14,'bold'),
                             pady=10,
-                            command=self.submit(txtuser=txtuser, txtpass=txtpass)).grid(row=3,column=1,pady=10)
+                            command=self.submit).grid(row=3,column=1,pady=10)
 
     def checkLogin(self, username, password):
-
         filename = 'data/Models/User.xlsx'
         df = pd.read_excel(filename)
 
@@ -84,14 +90,14 @@ class LoginGUI(object):
 
         return flagLogin
 
-    def submit(self, txtuser, txtpass):
-        flagLogin = self.checkLogin(username=txtuser, password=txtpass)
+    def submit(self):
+        print(self.user_entry.get())
+        flagLogin = self.checkLogin(username=self.user_entry.get(), password=self.pass_entry.get())
 
-        
         if flagLogin == 1:
             self.root.destroy()
             window = Tk()
             dashboard = Dashboard(window)
         else:
-            messagebox.showerror(title="Login Fail", message="Your username and password doesn't match! Please try again.")
+            messagebox.showerror(title="Lỗi Đăng Nhập", message="Tài khoản hoặc mật khẩu của bạn bị sai. Vui lòng nhập lại!")
         

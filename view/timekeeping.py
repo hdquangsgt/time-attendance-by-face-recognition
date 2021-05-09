@@ -2,13 +2,14 @@ from tkinter import *
 from tkcalendar import *
 import os
 import pandas as pd
-from datetime import date
+from .datepicker import CustomDateEntry
 
 class TimekeepingGUI(object):
     def __init__(self, root):
         self.root = root
         self.root.title('Chấm công')
         self.root.geometry('1350x700+0+0')
+        self.root.resizable(False, False)
 
         bg_color = '#990099'
         
@@ -82,13 +83,9 @@ class TimekeepingGUI(object):
         #   Select datetime picker
         lbl_timepicker = Label(Timekeeping_Frame, text = 'Ngày chấm công', font=('time new roman',14,'bold'))
         lbl_timepicker.grid(row = 0, column = 0, pady = 25)
-
-        timepicker = DateEntry(Timekeeping_Frame, 
-                            width = 14, 
-                            background = 'blue', 
-                            font=('time new roman',14,'bold'), 
-                            foregroundcolor = 'red',
-                            borderWidth = 3)
+        
+        timepicker = CustomDateEntry(Timekeeping_Frame)
+        timepicker._set_text(timepicker._date.strftime('%d/%m/%Y'))
         timepicker.grid(row = 0, column = 1, pady = 25)
 
         #   Button checkin employee

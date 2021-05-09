@@ -8,6 +8,7 @@ class Dashboard(object):
     def __init__(self, root):
         self.root = root
         self.root.geometry('550x445+0+0')
+        self.root.resizable(False, False)
 
         Layout_Frame = Frame(self.root, bd=4, relief = RIDGE, bg = 'white')
         Layout_Frame.place(x = 0, y = 5, width = 550, height = 570)

@@ -6,6 +6,7 @@ import mediapipe as mp
 class AddFaceGUI(object):
     def __init__(self, employee = None):
         self.employee = employee
+        
         if (self.employee):
             user_id = self.employee[4]
             folder = os.path.abspath('data/face_train/'+user_id)
