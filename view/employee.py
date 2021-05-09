@@ -15,19 +15,25 @@ class EmployeeGUI(object):
         self.root = root
         self.root.title('Quản lý nhân viên')
         self.root.geometry('1350x700+0+0')
+        
+        bg_color = '#990099'
+        
+        #   Title monitor
+        title = Label(self.root, text='Quản lý nhân viên', font=('time new roman',25,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
+        title.pack(fill = X)
 
         # Layouts menu
-        Layout_Frame = Frame(self.root, bd=4, relief = RIDGE, bg = 'blue')
+        Layout_Frame = Frame(self.root, bd = 14, relief = RIDGE, bg = bg_color)
         Layout_Frame.place(x = 20, y = 100, width = 400, height = 560)
 
         layout_title = Label(Layout_Frame, 
                             text='Bảng điều khiển',
-                            bg = 'blue',
+                            bg = bg_color,
                             fg = 'white',
                             compound = CENTER,
                             font = ('time new roman', 24, 'bold'))
         layout_title.grid(row = 0, columnspan = 2, pady = 50)
-
+        
         def onClickKeeptimeManage():
             self.root.destroy()
             timekeeping = Tk()
@@ -41,48 +47,50 @@ class EmployeeGUI(object):
 
         btn_employee = Button(Layout_Frame,
                         text = 'Quản lý nhân viên',
-                        width = 25,
+                        width = 23,
                         bg = 'red',
                         fg = 'white',
                         compound = CENTER,
+                        relief = RIDGE,
+                        bd = 5,
                         font = ('time new roman', 18, 'bold'))
-        btn_employee.grid(row = 1, column = 0, padx = 0, pady = 10)
+        btn_employee.grid(row = 1, column = 0, padx = 5, pady = 10)
 
         btn_keeptime = Button(Layout_Frame,
                         text = 'Chấm công',
-                        width = 25,
+                        width = 23,
                         bg = 'gray',
                         fg = 'white',
+                        relief = RIDGE,
+                        bd = 5,
                         compound = CENTER,
                         command = onClickKeeptimeManage,
                         font = ('time new roman', 18, 'bold'))
-        btn_keeptime.grid(row = 2, column = 0, padx = 0, pady = 5)
+        btn_keeptime.grid(row = 2, column = 0, padx = 5, pady = 5)
 
         btn_logout = Button(Layout_Frame,
                         text = 'Đăng xuất',
-                        width = 25,
+                        width = 23,
                         bg = 'gray',
                         fg = 'white',
+                        relief = RIDGE,
+                        bd = 5,
                         compound = CENTER,
                         command = logout,
                         font = ('time new roman', 18, 'bold'))
-        btn_logout.grid(row = 4, column = 0, padx = 0, pady = 150)
-
-        #   Title monitor
-        title = Label(self.root, text='Quản lý nhân viên', font=('time new roman',20,'bold'),bg='blue',fg='white')
-        title.pack(side=TOP, fill=X)
+        btn_logout.grid(row = 4, column = 0, padx = 5, pady = 150)
 
         #   Panel right Screen
-        Panel_right = Frame(self.root, bd = 4,bg = 'crimson', relief = RIDGE)
+        Panel_right = Frame(self.root, bg = bg_color, bd = 10, relief = RIDGE)
         Panel_right.place(x = 500, y = 100, width = 840, height = 560)
 
         #   Employee Screen
-        Employee_Frame = Frame(Panel_right,bd = 4,bg = 'crimson')
-        Employee_Frame.place(x = 0, y = 80, width = 839, height = 450)
+        Employee_Frame = Frame(Panel_right, bg = bg_color)
+        Employee_Frame.place(x = 0, y = 80, width = 820, height = 450)
 
         #   Table data employee
-        table_frame = Frame(Employee_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
-        table_frame.place(x = 0, y = 100, width = 830, height = 350)
+        table_frame = Frame(Employee_Frame, bd = 5, relief = RIDGE, bg = bg_color)
+        table_frame.place(x = 5, y = 100, width = 810, height = 350)
 
         scroll_x = Scrollbar(table_frame,orient = HORIZONTAL)
         scroll_y = Scrollbar(table_frame,orient = VERTICAL)
@@ -114,11 +122,11 @@ class EmployeeGUI(object):
         table_employee.pack(fill = BOTH, expand = 1)
 
         #   Search Screen
-        Search_Frame = Frame(Panel_right, bg = 'crimson')
-        Search_Frame.place(x = 0, y = 20, width = 840, height = 80)
+        Search_Frame = Frame(Panel_right, bg = bg_color)
+        Search_Frame.place(x = 0, y = 20, width = 820, height = 80)
 
         #   Search
-        lbl_search = Label(Search_Frame, text = 'Tìm kiếm nhân viên', bg = 'crimson', fg= 'white', font = ('time new roman', 14, 'bold'))
+        lbl_search = Label(Search_Frame, text = 'Tìm kiếm nhân viên', bg = bg_color, fg= 'white', font = ('time new roman', 14, 'bold'))
         lbl_search.grid(row = 0, column = 0, padx = 20, pady = 10, sticky = 'w')
 
         def callback(event):
@@ -134,38 +142,66 @@ class EmployeeGUI(object):
         txt_search = Entry(Search_Frame, width = 20, font = ('time new roman', 12), bd = 5, relief = GROOVE, textvariable = self.keyword)
         txt_search.grid(row = 0, column = 1, padx = 20, pady = 10)
 
-        btn_search = Button(Search_Frame, text = 'Xóa', width = 10, font = ('time new roman', 10), pady = 5, command = lambda:set_text(""))
+        btn_search = Button(Search_Frame, text = 'Xóa', width = 10, bg ='dim gray', font = ('time new roman', 10), pady = 5, command = lambda:set_text(""))
         btn_search.grid(row = 0, column = 2, padx = 20, pady = 10)
 
         #   Button registry employee
         btn_registry = Button(Employee_Frame,
+            bd = 0,
+            relief = "groove",
+            compound = CENTER,
+            bg = "yellow",
+            fg = "black",
             text = 'Thêm nhân viên',
-            bg = 'blue',
+            activeforeground = "pink",
+            activebackground = "white",
             font = ('time new roman', 13, 'bold'),
+            pady = 10,
             command = self.registry)
         btn_registry.grid(row = 0, column = 0, padx = 25, pady = 25)
 
         #   Button add face employee
         btn_addFace = Button(Employee_Frame,
+            bd = 0,
+            relief = "groove",
+            compound = CENTER,
+            bg = "yellow",
+            fg = "black",
             text = 'Thêm khuôn mặt',
-            bg = 'green',
+            activeforeground = "pink",
+            activebackground = "white",
             font = ('time new roman', 13, 'bold'),
-            command = self.addFace)
+            pady = 10,
+            command = self.addFace) 
         btn_addFace.grid(row = 0, column = 1, padx = 20, pady = 25)
 
         #   Button show data face employee
         btn_showFace = Button(Employee_Frame,
+            bd = 0,
+            relief = "groove",
+            compound = CENTER,
+            bg = "yellow",
+            fg = "black",
             text = 'Xem dữ liệu khuôn mặt',
-            bg = 'yellow',
+            activeforeground = "pink",
+            activebackground = "white",
             font = ('time new roman', 13, 'bold'),
+            pady = 10,
             command = self.showFace)
         btn_showFace.grid(row = 0, column = 2, padx = 20)
 
         #   Button show data face employee
         btn_trainFace = Button(Employee_Frame,
+            bd = 0,
+            relief = "groove",
+            compound = CENTER,
+            bg = "yellow",
+            fg = "black",
             text = 'Training khuôn mặt',
-            bg = 'yellow',
+            activeforeground = "pink",
+            activebackground = "white",
             font = ('time new roman', 13, 'bold'),
+            pady = 10,
             command = self.trainFace)
         btn_trainFace.grid(row = 0, column = 3, padx = 20, pady = 25)
 
@@ -178,9 +214,9 @@ class EmployeeGUI(object):
         def selectEmployeeDetail(e):
             employee = getData()
             if employee:
+                self.root.destroy()
                 frame = Tk()
                 frame = DetailEmployeeGUI(frame,employee)
-                self.root.destroy()
             else:
                 pass
 

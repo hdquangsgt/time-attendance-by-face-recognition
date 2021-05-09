@@ -4,6 +4,8 @@ from PIL import ImageTk, Image
 import os
 import pandas as pd
 from openpyxl import load_workbook
+import re
+import datetime
 
 class RegistryForm(object):
     def __init__(self, root):
@@ -60,6 +62,12 @@ class RegistryForm(object):
         Button(registry_frm, text='Trở về',width=20,bg='brown',fg='white',command=self.goToBack).place(x=50,y=250)
         Button(registry_frm, text='Đăng ký',width=20,bg='brown',fg='white',command=self.submit).place(x=300,y=250)
         
+    def goToBack(self):
+        from .employee import EmployeeGUI
+        self.root.destroy()
+        frame = Tk()
+        employee = EmployeeGUI(frame)
+
     def addDataExcel(self, data, filename):
         wb_obj = load_workbook(filename)
         sheet_obj = wb_obj.active
@@ -120,12 +128,16 @@ class RegistryForm(object):
             errorFrame.geometry('300x160')
             errorFrame.title('Kiểm tra dữ liệu nhập')
 
-            Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 20, pady = 5)
-            Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 20, pady = 5)
-            Label(errorFrame, text = validated[2], fg = 'red').grid(row = 2, column = 0, padx = 20, pady = 5)
+            if(validated[0]):
+                Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 20, pady = 5)
+            elif(validated[1]):
+                Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 20, pady = 5)
+            else:
+                Label(errorFrame, text = validated[2], fg = 'red').grid(row = 2, column = 0, padx = 20, pady = 5)
 
             Button(errorFrame, text = 'Đã hiểu', command = self.deleteErrorFrame).grid(row = 3, column = 0, padx = 20, pady = 15)
             return
+
     def deleteErrorFrame(self):
         errorFrame.destroy()
 
@@ -157,12 +169,13 @@ class RegistryForm(object):
         name_message = ''
         birth_message = ''
         email_message = ''
-
-        if(len(name) == 0 or len(birth) == 0 or len(email) == 0):
-            name_message = 'Tên không được để trống'
-            birth_message = 'Ngày sinh không được để trống'
-            email_message = 'Email không được để trống'
-            return [name_message,birth_message,email_message]
+        input = {
+            'name' : name,
+            'birth': birth,
+            'email': email
+        }
+        if(self.checkEmpty(input)):
+            return self.checkEmpty(input)
         
         year,month,day = map(str,birth.split('/'))
         if(len(year) == 0 or len(month) == 0 or len(day) == 0):
@@ -177,10 +190,24 @@ class RegistryForm(object):
             if(int(month) > 12 or int(day) > 31 ):
                 birth_message = 'Định dạng ngày sinh không đúng'
 
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+        if(re.search(regex,email)):   
+            email_message = 'Định dạng email không hợp lệ'
         return [name_message,birth_message,email_message]
 
-    def goToBack(self):
-        from .employee import EmployeeGUI
-        frame = Tk()
-        employee = EmployeeGUI(frame)
-        self.root.destroy()
+    def checkEmpty(self,input):
+        result = []
+        if(len(input['name']) == 0):
+            result.append('Tên không được để trống')
+
+        if(len(input['birth']) == 0):
+            result.append('Ngày sinh không được để trống')
+
+        if(len(input['email']) == 0):
+            result.append('Email không được để trống')
+
+        return result
+
+    def checkDatetime(self,date):
+        isinstance(x, datetime.date)
+

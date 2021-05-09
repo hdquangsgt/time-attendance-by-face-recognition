@@ -7,21 +7,27 @@ from datetime import date
 class TimekeepingGUI(object):
     def __init__(self, root):
         self.root = root
-        self.root.title('Quản lý chấm công')
+        self.root.title('Chấm công')
         self.root.geometry('1350x700+0+0')
 
+        bg_color = '#990099'
+        
+        #   Title monitor
+        title = Label(self.root, text='Chấm công', font=('time new roman',25,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
+        title.pack(fill = X)
+
         # Layouts menu
-        Layout_Frame = Frame(self.root, bd=4, relief = RIDGE, bg = 'blue')
+        Layout_Frame = Frame(self.root, bd = 14, relief = RIDGE, bg = bg_color)
         Layout_Frame.place(x = 20, y = 100, width = 400, height = 560)
 
         layout_title = Label(Layout_Frame, 
                             text='Bảng điều khiển',
-                            bg = 'blue',
+                            bg = bg_color,
                             fg = 'white',
                             compound = CENTER,
                             font = ('time new roman', 24, 'bold'))
         layout_title.grid(row = 0, columnspan = 2, pady = 50)
-
+        
         def onClickEmployeeManage():
             from .employee import EmployeeGUI
             self.root.destroy()
@@ -36,36 +42,38 @@ class TimekeepingGUI(object):
 
         btn_employee = Button(Layout_Frame,
                         text = 'Quản lý nhân viên',
-                        width = 25,
+                        width = 23,
                         bg = 'gray',
                         fg = 'white',
                         compound = CENTER,
-                        font = ('time new roman', 18, 'bold'),
-                        command = onClickEmployeeManage)
-        btn_employee.grid(row = 1, column = 0, padx = 0, pady = 10)
+                        relief = RIDGE,
+                        bd = 5,
+                        command = onClickEmployeeManage,
+                        font = ('time new roman', 18, 'bold'))
+        btn_employee.grid(row = 1, column = 0, padx = 5, pady = 10)
 
         btn_keeptime = Button(Layout_Frame,
                         text = 'Chấm công',
-                        width = 25,
+                        width = 23,
                         bg = 'red',
                         fg = 'white',
+                        relief = RIDGE,
+                        bd = 5,
                         compound = CENTER,
                         font = ('time new roman', 18, 'bold'))
-        btn_keeptime.grid(row = 2, column = 0, padx = 0, pady = 5)
+        btn_keeptime.grid(row = 2, column = 0, padx = 5, pady = 5)
 
         btn_logout = Button(Layout_Frame,
                         text = 'Đăng xuất',
-                        width = 25,
+                        width = 23,
                         bg = 'gray',
                         fg = 'white',
+                        relief = RIDGE,
+                        bd = 5,
                         compound = CENTER,
-                        font = ('time new roman', 18, 'bold'),
-                        command = logout)
-        btn_logout.grid(row = 4, column = 0, padx = 0, pady = 150)
-
-        #   Title monitor
-        title = Label(self.root, text='Chấm công', font=('time new roman',20,'bold'),bg='blue',fg='white')
-        title.pack(side=TOP, fill=X)
+                        command = logout,
+                        font = ('time new roman', 18, 'bold'))
+        btn_logout.grid(row = 4, column = 0, padx = 5, pady = 150)
         
         #   Table data timekeeping
         Timekeeping_Frame = Frame(self.root, bd = 4, relief = RIDGE)
@@ -84,18 +92,32 @@ class TimekeepingGUI(object):
         timepicker.grid(row = 0, column = 1, pady = 25)
 
         #   Button checkin employee
-        btn_registry = Button(Timekeeping_Frame,
-            text = 'Checkin',
-            bg = 'blue',
-            font = ('time new roman', 13, 'bold'))
-        btn_registry.grid(row = 1, column = 0, padx = 25, pady = 15)
+        btn_checkin = Button(Timekeeping_Frame,
+            bd = 0,
+            relief = "groove",
+            compound = CENTER,
+            bg = "yellow",
+            fg = "black",
+            text = 'Check-in',
+            activeforeground = "pink",
+            activebackground = "white",
+            font = ('time new roman', 13, 'bold'),
+            pady = 10)
+        btn_checkin.grid(row = 1, column = 0, padx = 25, pady = 15)
 
         #   Button checkout employee
-        btn_addFace = Button(Timekeeping_Frame,
-            text = 'Check out',
-            bg = 'green',
-            font = ('time new roman', 13, 'bold'))
-        btn_addFace.grid(row = 1, column = 1, padx = 25, pady = 15)
+        btn_checkout = Button(Timekeeping_Frame,
+            bd = 0,
+            relief = "groove",
+            compound = CENTER,
+            bg = "yellow",
+            fg = "black",
+            text = 'Check-out',
+            activeforeground = "pink",
+            activebackground = "white",
+            font = ('time new roman', 13, 'bold'),
+            pady = 10)
+        btn_checkout.grid(row = 1, column = 1, padx = 25, pady = 15)
 
         #   Table data timekeeping
         table_frame = Frame(Timekeeping_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
