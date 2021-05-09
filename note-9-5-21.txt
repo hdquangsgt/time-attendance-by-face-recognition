@@ -1,0 +1,35 @@
+- All View:
+	- Format date form: dd/mm/yyyy (Quang)
+-> Est: Hôm nay
+
+- View đăng nhập: (Trung)
+	- Lưu trong file Excel
+	- Pass Hash
+-> Est: Hôm nay
+
+- View Nhân viên:
+	- Thêm nhân viên button:
+		- Ngày sinh dùng calendar -> Giải quyết vấn đề regex (Quang)
+	- Nút Training khuôn mặt (Trung)
+	- Chi tiết nhân viên: (Quang)
+		- Show all info
+		- Thêm 1 nút cho khuôn mặt đại diện.
+			- Tên nút: Chọn
+			- Nếu có ảnh trong folder thì chọn ảnh đầu tiên hoặc ngẫu nhiên gì đó
+			- Nếu muốn thay đổi ảnh thì bấm nút chọn.
+			- Còn nếu mà chưa có ảnh trong thư viên tương ứng với tên nhân viên thì sẽ để ảnh trắng, mặc định.
+		- Trong model employees phải có thêm 1 col avatar
+-> Est: Hôm nay
+
+- View Chấm công: (Quang)
+	- Sửa lại form cho đẹp, đúng concept
+	- Chọn ngày thì sẽ lấy thông tin record của ngày hôm đó
+	- Chi tiết chấm công:
+		- Thêm 2 col trong model time_keep: face_checkin, face_checkout
+		- Show all info
+		- Show 3 bức ảnh 
+			- 1 ảnh đại diện của userid đó.
+			- 1 ảnh sau khi nhận diện checkin (Nếu chưa có record thì để trắng)
+			- 1 ảnh sau khi nhận diện checkout (Nếu chưa có record thì để trắng)
+-> Est: Mai
+		
