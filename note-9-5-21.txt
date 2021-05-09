@@ -1,5 +1,5 @@
 - All View:
-	- Format date form: dd/mm/yyyy (Quang)
+	- Format date form: dd/mm/yyyy (Quang) (done)
 -> Est: Hôm nay
 
 - View đăng nhập: (Trung)
@@ -9,16 +9,16 @@
 
 - View Nhân viên:
 	- Thêm nhân viên button:
-		- Ngày sinh dùng calendar -> Giải quyết vấn đề regex (Quang)
+		- Ngày sinh dùng calendar -> Giải quyết vấn đề regex (Quang) (done)
 	- Nút Training khuôn mặt (Trung)
-	- Chi tiết nhân viên: (Quang)
+	- Chi tiết nhân viên: (Quang) (60%)
 		- Show all info
 		- Thêm 1 nút cho khuôn mặt đại diện.
 			- Tên nút: Chọn
 			- Nếu có ảnh trong folder thì chọn ảnh đầu tiên hoặc ngẫu nhiên gì đó
 			- Nếu muốn thay đổi ảnh thì bấm nút chọn.
 			- Còn nếu mà chưa có ảnh trong thư viên tương ứng với tên nhân viên thì sẽ để ảnh trắng, mặc định.
-		- Trong model employees phải có thêm 1 col avatar
+		- Trong model employees phải có thêm 1 col avatar (done)
 -> Est: Hôm nay
 
 - View Chấm công: (Quang)
