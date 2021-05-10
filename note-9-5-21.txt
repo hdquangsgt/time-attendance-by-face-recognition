@@ -12,7 +12,7 @@
 		- Ngày sinh dùng calendar -> Giải quyết vấn đề regex (Quang) (done)
 	- Nút Training khuôn mặt (Trung)
 	- Chi tiết nhân viên: (Quang) (60%)
-		- Show all info
+		- Show all info (done)
 		- Thêm 1 nút cho khuôn mặt đại diện.
 			- Tên nút: Chọn
 			- Nếu có ảnh trong folder thì chọn ảnh đầu tiên hoặc ngẫu nhiên gì đó
