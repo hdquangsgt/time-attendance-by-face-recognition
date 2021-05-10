@@ -241,8 +241,8 @@ class EmployeeGUI(object):
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            row[3] = row[3].strftime('%m/%d/%Y')
-            data = [row[0],row[2],row[3],row[4],row[1]]
+            row[3] = row[3].strftime('%d/%m/%Y')
+            data = [row[0],row[2],row[3],row[4],row[1],row[5]]
             employee_tree.insert('',index = 'end', iid = row[0],value=data)
             iid = iid + 1
 

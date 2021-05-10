@@ -21,7 +21,7 @@ class RegistryForm(object):
         self.email_entry = ''
 
         #========= All images =========#
-        # imageBG = os.path.abspath('view/images/background-login.png')
+        # imageBG = os.path.abspath('view/images/bg-login.png')
         # self.bg_icon = PhotoImage(file = imageBG)
         # bg_lbl = Label(self.root, image = self.bg_icon).place(x = 250, y = 0, relwidth = 1, relheight = 1)
 
@@ -34,7 +34,7 @@ class RegistryForm(object):
                             bg = bg_color,
                             fg = 'white',
                             compound = CENTER,
-                            bd = 10, 
+                            bd = 10,
                             relief = GROOVE,
                             font = ('time new roman', 24, 'bold'))
         registry_title.place(x = 0, y = 0, relwidth = 1)
