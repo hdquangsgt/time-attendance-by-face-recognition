@@ -3,6 +3,7 @@ from PIL import ImageTk, Image
 import os
 import pandas as pd
 from openpyxl import load_workbook
+import xlsxwriter
 from .datepicker import CustomDateEntry
 
 class DetailEmployeeGUI(object):
@@ -33,9 +34,9 @@ class DetailEmployeeGUI(object):
 
         self.avatar = ImageTk.PhotoImage(resizeBG)
 
-        lbl_avatar = Label(self.panel_left, image = self.avatar)
-        lbl_avatar.place(x = 120, y = 0)
-        lbl_avatar.bind('<Double-1>',self.uploadAvatar)
+        self.lbl_avatar = Label(self.panel_left, image = self.avatar)
+        self.lbl_avatar.place(x = 120, y = 0)
+        self.lbl_avatar.bind('<Double-1>',self.uploadAvatar)
 
         #   Button back
         btn_back = Button(self.panel_left,
@@ -102,12 +103,24 @@ class DetailEmployeeGUI(object):
 
     def uploadAvatar(self,event):
         filename = filedialog.askopenfilename(filetypes=[("Image File",'.jpg')])
-        pic = Toplevel()
         im = Image.open(filename)
+
+        #   Update path avatar
+        self.updatePathAvatar(filename)
         tkimage = ImageTk.PhotoImage(im)
-        lbl_avatar = Label(self.panel_left, image = tkimage)
-        lbl_avatar.place(x = 120, y = 0)
-        pic.mainloop()
+        self.lbl_avatar = Label(self.panel_left, image = tkimage)
+        self.lbl_avatar.place(x = 120, y = 0)
+        self.lbl_avatar.bind('<Double-1>',self.uploadAvatar)
+        self.root.mainloop()
+
+    def updatePathAvatar(self,pathImage):
+        filename = os.path.abspath('data/Models/Employee.xlsx')
+        df = pd.read_excel(filename)
+        df.loc[df['user_id'] == self.employee[4], 'avatar'] = pathImage
+
+        writer = pd.ExcelWriter(filename, engine='xlsxwriter')
+        df.to_excel(writer,index=False)
+        writer.save()
 
     def goToBack(self):
             from .employee import EmployeeGUI
