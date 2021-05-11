@@ -119,7 +119,8 @@ class RegistryForm(object):
                 user_id,
                 name,
                 self.birth_entry.get_date(),
-                self.email_entry.get()
+                self.email_entry.get(),
+                ''
             ]
             self.addDataExcel(data, filename)
             self.createFolder(user_id)
