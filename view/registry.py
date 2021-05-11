@@ -5,7 +5,6 @@ import os
 import pandas as pd
 from openpyxl import load_workbook
 import re
-import datetime
 from .datepicker import CustomDateEntry
 
 class RegistryForm(object):

@@ -96,7 +96,7 @@ class EmployeeGUI(object):
         scroll_x = Scrollbar(table_frame,orient = HORIZONTAL)
         scroll_y = Scrollbar(table_frame,orient = VERTICAL)
 
-        table_employee = ttk.Treeview(
+        self.table_employee = ttk.Treeview(
             table_frame, 
             columns = ('id', 'name', 'birth', 'email'),
             xscrollcommand = scroll_x.set,
@@ -104,23 +104,23 @@ class EmployeeGUI(object):
         )
         scroll_x.pack(side = BOTTOM, fill = X)
         scroll_y.pack(side = RIGHT, fill = Y)
-        scroll_x.config(command = table_employee.xview)
-        scroll_y.config(command = table_employee.yview)
+        scroll_x.config(command = self.table_employee.xview)
+        scroll_y.config(command = self.table_employee.yview)
 
-        table_employee.heading('id', text = 'STT')
-        table_employee.heading('name', text = 'Họ và tên')
-        table_employee.heading('birth', text = 'Ngày sinh')
-        table_employee.heading('email', text = 'Email')
+        self.table_employee.heading('id', text = 'STT')
+        self.table_employee.heading('name', text = 'Họ và tên')
+        self.table_employee.heading('birth', text = 'Ngày sinh')
+        self.table_employee.heading('email', text = 'Email')
 
-        table_employee['show'] = 'headings'
+        self.table_employee['show'] = 'headings'
 
-        table_employee.column('id', width = 100)
-        table_employee.column('name', width = 150)
-        table_employee.column('birth', width = 100)
-        table_employee.column('email', width = 150)
+        self.table_employee.column('id', width = 100)
+        self.table_employee.column('name', width = 150)
+        self.table_employee.column('birth', width = 100)
+        self.table_employee.column('email', width = 150)
 
-        self.loadData(table_employee)
-        table_employee.pack(fill = BOTH, expand = 1)
+        self.loadData(self.table_employee)
+        self.table_employee.pack(fill = BOTH, expand = 1)
 
         #   Search Screen
         Search_Frame = Frame(Panel_right, bg = bg_color)
@@ -131,7 +131,7 @@ class EmployeeGUI(object):
         lbl_search.grid(row = 0, column = 0, padx = 20, pady = 10, sticky = 'w')
 
         def callback(event):
-            self.loadData(table_employee,event.get())
+            self.loadData(self.table_employee,event.get())
 
         def set_text(text):
             txt_search.delete(0,END)
@@ -208,8 +208,8 @@ class EmployeeGUI(object):
 
         #   Get data record
         def getData():
-            selected = table_employee.focus()
-            return table_employee.item(selected, 'values')
+            selected = self.table_employee.focus()
+            return self.table_employee.item(selected, 'values')
 
         #   Create binding click function
         def selectEmployeeDetail(e):
@@ -226,8 +226,8 @@ class EmployeeGUI(object):
             self.employeeData = getData()
         
         #   Bindings
-        table_employee.bind('<Double-1>', selectEmployeeDetail)
-        table_employee.bind('<ButtonRelease-1>',selectEmployeeData)
+        self.table_employee.bind('<Double-1>', selectEmployeeDetail)
+        self.table_employee.bind('<ButtonRelease-1>',selectEmployeeData)
         
     def loadData(self,employee_tree, keyword = None):
         self.clearTree(employee_tree)
@@ -259,6 +259,7 @@ class EmployeeGUI(object):
         if(self.employeeData):
             Path(os.path.abspath('data/face_train/' + self.employeeData[4])).mkdir(parents=True, exist_ok=True)
             addFaceFrame = AddFaceGUI(employee = self.employeeData)
+        self.loadData(self.table_employee)
         return
 
     def showFace(self):

@@ -2,6 +2,7 @@ import cv2
 import os
 from datetime import datetime
 import mediapipe as mp
+import pandas as pd
 from openpyxl import load_workbook
 import xlsxwriter
 
@@ -11,7 +12,7 @@ class AddFaceGUI(object):
         
         if (self.employee):
             user_id = self.employee[4]
-            folder = os.path.abspath('data/face_train/'+user_id)
+            folder = os.path.abspath('data/face_train/' + user_id)
 
         video_capture = cv2.VideoCapture(0)
         mpFaceDetect = mp.solutions.face_detection
@@ -40,7 +41,7 @@ class AddFaceGUI(object):
                         pathImage = folder + '/' + str(timestr) + ".jpg"
                         cv2.imwrite(pathImage, roi_color)
                         if(self.employee[5] == 'nan'):
-                            self.updatePathAvatar(pathImage)
+                            self.updatePathAvatar('data/face_train/' + user_id + '/' + str(timestr) + ".jpg")
                         count += 1
 
                     self.fancyBox(img, bbox)
