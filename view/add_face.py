@@ -1,7 +1,9 @@
 import cv2
 import os
 from datetime import datetime
-import mediapipe as mp 
+import mediapipe as mp
+from openpyxl import load_workbook
+import xlsxwriter
 
 class AddFaceGUI(object):
     def __init__(self, employee = None):
@@ -35,7 +37,10 @@ class AddFaceGUI(object):
                         x, y, w, h = bbox
                         roi_color = img[y:y+h, x:x+w]
                         roi_color = cv2.resize(roi_color, (180, 180))
-                        cv2.imwrite(folder + '/' + str(timestr) + ".jpg", roi_color)
+                        pathImage = folder + '/' + str(timestr) + ".jpg"
+                        cv2.imwrite(pathImage, roi_color)
+                        if(self.employee[5] == 'nan'):
+                            self.updatePathAvatar(pathImage)
                         count += 1
 
                     self.fancyBox(img, bbox)
@@ -65,3 +70,11 @@ class AddFaceGUI(object):
         cv2.line(img, (x1, y1), (x1 - l, y1), (192, 0, 215), t)
         cv2.line(img, (x1, y1), (x1, y1 - l), (192, 0, 215), t)
 
+    def updatePathAvatar(self,pathImage):
+        filename = os.path.abspath('data/Models/Employee.xlsx')
+        df = pd.read_excel(filename)
+        df.loc[df['user_id'] == self.employee[4], 'avatar'] = pathImage
+
+        writer = pd.ExcelWriter(filename, engine='xlsxwriter')
+        df.to_excel(writer,index=False)
+        writer.save()
