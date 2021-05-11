@@ -112,7 +112,7 @@ class RegistryForm(object):
         
         validated = self.validate(name,self.email_entry.get())
         
-        if (validated == ['','','']):
+        if (validated == ['','']):
             user_id = self.generateUserId(self.no_accent_vietnamese(name))
             data = [
                 id,
@@ -137,8 +137,6 @@ class RegistryForm(object):
                 Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 20, pady = 5)
             elif(validated[1]):
                 Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 20, pady = 5)
-            else:
-                Label(errorFrame, text = validated[2], fg = 'red').grid(row = 2, column = 0, padx = 20, pady = 5)
 
             Button(errorFrame, text = 'Đã hiểu', command = self.deleteErrorFrame).grid(row = 3, column = 0, padx = 20, pady = 15)
             return
@@ -181,7 +179,7 @@ class RegistryForm(object):
             return self.checkEmpty(input)
         
         regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-        if(re.search(regex,email)):   
+        if(not re.search(regex,email)):   
             email_message = 'Định dạng email không hợp lệ'
         return [name_message,email_message]
 
