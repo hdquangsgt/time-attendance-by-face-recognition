@@ -5,6 +5,7 @@ import pandas as pd
 from openpyxl import load_workbook
 import xlsxwriter
 from .datepicker import CustomDateEntry
+from pathlib import Path
 
 class DetailEmployeeGUI(object):
     def __init__(self, root, employee):
@@ -102,7 +103,9 @@ class DetailEmployeeGUI(object):
         update_btn = Button(panel_right)
 
     def uploadAvatar(self,event):
-        filename = filedialog.askopenfilename(filetypes=[("Image File",'.jpg')])
+        pathFileFaces = os.path.abspath('data/face_train/' + str(self.employee[4]))
+        Path(pathFileFaces).mkdir(parents=True, exist_ok=True)
+        filename = filedialog.askopenfilename(initialdir=pathFileFaces,title="Select A File",filetypes=(('Image File','.jpg'),('All File',"*.*")))
         im = Image.open(filename)
 
         #   Update path avatar
