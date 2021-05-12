@@ -22,14 +22,14 @@
 -> Est: Hôm nay
 
 - View Chấm công: (Quang)
-	- Sửa lại form cho đẹp, đúng concept
-	- Chọn ngày thì sẽ lấy thông tin record của ngày hôm đó
+	- Sửa lại form cho đẹp, đúng concept (done)
+	- Chọn ngày thì sẽ lấy thông tin record của ngày hôm đó (done)
 	- Chi tiết chấm công:
-		- Thêm 2 col trong model time_keep: face_checkin, face_checkout
-		- Show all info
+		- Thêm 2 col trong model time_keep: face_checkin, face_checkout (done)
+		- Show all info (done)
 		- Show 3 bức ảnh 
-			- 1 ảnh đại diện của userid đó.
-			- 1 ảnh sau khi nhận diện checkin (Nếu chưa có record thì để trắng)
-			- 1 ảnh sau khi nhận diện checkout (Nếu chưa có record thì để trắng)
+			- 1 ảnh đại diện của userid đó. (done)
+			- 1 ảnh sau khi nhận diện checkin (bắt buộc có) (done)
+			- 1 ảnh sau khi nhận diện checkout (Nếu chưa có record thì để trắng) (done)
 -> Est: Mai
 		
