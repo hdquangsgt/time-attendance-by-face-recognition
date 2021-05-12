@@ -87,7 +87,7 @@ class DetailEmployeeGUI(object):
         birth_lbl = Label(panel_right, text="Ngày sinh", width = 20, compound = LEFT, font=("bold", 10))
         birth_lbl.grid(row = 3, column = 0, padx = 110, pady = 20)
 
-        self.birth_entry = CustomDateEntry(panel_right)
+        self.birth_entry = CustomDateEntry(panel_right, date_pattern='dd/MM/yyyy')
         self.birth_entry._set_text(self.employee[2])
         self.birth_entry.config(width = 44)
         self.birth_entry.grid(row = 3, column = 1, padx = 5, pady = 10, ipady = 2, ipadx = 20)

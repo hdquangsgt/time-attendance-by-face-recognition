@@ -120,13 +120,14 @@ class TimekeepingGUI(object):
         self.table_timekeeping.pack(fill = BOTH, expand = 1)
 
         #   Select datetime picker
-        lbl_timepicker = Label(Panel_right, text = 'Ngày chấm công', font=('time new roman',14,'bold'))
-        lbl_timepicker.grid(row = 0, column = 0, pady = 25)
+        lbl_timepicker = Label(Panel_right, text = 'Ngày chấm công', bg = bg_color, fg= 'white', font=('time new roman',14,'bold'))
+        lbl_timepicker.grid(row = 0, column = 0, padx = 10, pady = 25)
         
-        self.timepicker = CustomDateEntry(Panel_right, date_pattern='dd/MM/yyyy')
+        self.timepicker = CustomDateEntry(Panel_right, width = 30, date_pattern='dd/MM/yyyy')
         self.timepicker._set_text(self.timepicker._date.strftime('%d/%m/%Y'))
-        self.timepicker.grid(row = 0, column = 1, pady = 25)
-        
+        self.timepicker.config(width = 30)
+        self.timepicker.grid(row = 0, column = 1,padx = 20, pady = 25, ipady = 4, ipadx = 20)
+
         #   Button checkin employee
         btn_checkin = Button(Panel_right,
             bd = 0,
@@ -199,6 +200,10 @@ class TimekeepingGUI(object):
     def clearTree(self,my_tree):
         my_tree.delete(*my_tree.get_children())
     
+    def selectDate(self,e):
+        print('hello')
+        self.loadData(self.table_timekeeping,self.timepicker.get_date())
+
     def checkin():
         pass
 

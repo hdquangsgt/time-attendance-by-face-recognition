@@ -54,7 +54,8 @@ class RegistryForm(object):
 
         self.birth_entry = CustomDateEntry(registry_frm, date_pattern='dd/MM/yyyy')
         self.birth_entry._set_text(self.birth_entry._date.strftime('%d/%m/%Y'))
-        self.birth_entry.grid(row = 2, column = 2, padx = 10, pady = 10)
+        self.birth_entry.config(width = 30)
+        self.birth_entry.grid(row = 2, column = 2, padx = 10, pady = 10, ipady = 2, ipadx = 20)
         
         #   Field email
         email_lbl = Label(registry_frm, text="Email", width = 20, compound = LEFT, font=("bold", 10))

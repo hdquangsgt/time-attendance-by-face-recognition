@@ -27,18 +27,16 @@ class DetailTimekeepingGUI(object):
         self.panel_left.place(x = 20, y = 100, width = 400, height = 560)
         
         #   Load Avatar
-        if(self.employee[5] != 'nan'):
-            imageBG = Image.open(os.path.abspath(self.employee[5]))
-            resizeBG = imageBG.resize((180,180), Image.ANTIALIAS)
-        else:
-            imageBG = Image.open(os.path.abspath('view/images/avatar-default.png'))
-            resizeBG = imageBG.resize((180,180), Image.ANTIALIAS)
+        filename = os.path.abspath('data/Models/Employee.xlsx')
+        df = pd.read_excel(filename)
+        fileImage = df[df['user_id'] == self.timekeeping[1]].iloc[0]['avatar']
+
+        im = Image.open(os.path.abspath(fileImage))
+        resizeBG = im.resize((180,180), Image.ANTIALIAS)
 
         self.avatar = ImageTk.PhotoImage(resizeBG)
-
         self.lbl_avatar = Label(self.panel_left, image = self.avatar)
         self.lbl_avatar.place(x = 120, y = 0)
-        self.lbl_avatar.bind('<Double-1>',self.uploadAvatar)
 
         #   Button back
         btn_back = Button(self.panel_left,
@@ -55,14 +53,14 @@ class DetailTimekeepingGUI(object):
         panel_right = Frame(self.root, bg = bg_color)
         panel_right.place(x = 450, y = 100, width = 840, height = 560)
 
-        #   Load Employee Detail Information
+        #   Load Timekeepipng Detail Information
 
-        #   Field id
-        id_lbl = Label(panel_right, text = 'Số thứ tự', width = 20, compound = LEFT, font=("bold", 10))
+        #   Field date logtime
+        id_lbl = Label(panel_right, text = 'Ngày chấm công', width = 20, compound = LEFT, font=("bold", 10))
         id_lbl.grid(row = 0, column = 0, padx = 110, pady = 20)
 
         self.id_value_lbl = Entry(panel_right, width = 40, font=("bold", 10))
-        self.id_value_lbl.insert(0,self.employee[0])
+        self.id_value_lbl.insert(0,self.timekeeping[0])
         self.id_value_lbl.config(state='disabled')
         self.id_value_lbl.grid(row = 0, column = 1, padx = 10, pady = 20, ipady = 1, ipadx = 20)
 
@@ -71,63 +69,46 @@ class DetailTimekeepingGUI(object):
         userId_lbl.grid(row = 1, column = 0, padx = 110, pady = 20)
 
         self.userId_value_lbl = Entry(panel_right, width = 40, font=("bold", 10))
-        self.userId_value_lbl.insert(0,self.employee[4])
+        self.userId_value_lbl.insert(0,self.timekeeping[1])
         self.userId_value_lbl.config(state='disabled')
         self.userId_value_lbl.grid(row = 1, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
 
-        #   Field name
-        name_lbl = Label(panel_right, text="Họ và tên", width = 20, compound = LEFT, font=("bold", 10))
-        name_lbl.grid(row = 2, column = 0, padx = 110, pady = 20)
+        #   Field checkin time
+        checkin_time_lbl = Label(panel_right, text="Giờ checkin", width = 20, compound = LEFT, font=("bold", 10))
+        checkin_time_lbl.grid(row = 2, column = 0, padx = 110, pady = 20)
 
-        self.name_entry = Entry(panel_right, width = 40, font=("bold", 10))
-        self.name_entry.insert(0,self.employee[1])
-        self.name_entry.grid(row = 2, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
+        self.checkin_entry = Entry(panel_right, width = 40, font=("bold", 10))
+        self.checkin_entry.insert(0,self.timekeeping[2])
+        self.checkin_entry.grid(row = 2, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
 
-        #   Field birth
-        birth_lbl = Label(panel_right, text="Ngày sinh", width = 20, compound = LEFT, font=("bold", 10))
-        birth_lbl.grid(row = 3, column = 0, padx = 110, pady = 20)
+        #   Field checkout time
+        checkout_time_lbl = Label(panel_right, text="Giờ checkout", width = 20, compound = LEFT, font=("bold", 10))
+        checkout_time_lbl.grid(row = 3, column = 0, padx = 110, pady = 20)
 
-        self.birth_entry = CustomDateEntry(panel_right)
-        self.birth_entry._set_text(self.employee[2])
-        self.birth_entry.config(width = 44)
-        self.birth_entry.grid(row = 3, column = 1, padx = 5, pady = 10, ipady = 2, ipadx = 20)
+        self.checkout_entry = Entry(panel_right, width = 40, font=("bold", 10))
+        self.checkout_entry.insert(0,self.timekeeping[3])
+        self.checkout_entry.grid(row = 3, column = 1, padx = 5, pady = 10, ipady = 2, ipadx = 20)
         
-        #   Field email
-        email_lbl = Label(panel_right, text="Email", width = 20, compound = LEFT, font=("bold", 10))
-        email_lbl.grid(row = 4, column = 0, padx = 110, pady = 20)
+        # #   Field face checkin
+        # email_lbl = Label(panel_right, text="Ảnh checkin", width = 20, compound = LEFT, font=("bold", 10))
+        # email_lbl.grid(row = 4, column = 0, padx = 110, pady = 20)
 
-        self.email_entry = Entry(panel_right, width = 40, font=("bold", 10))
-        self.email_entry.insert(0,self.employee[3])
-        self.email_entry.grid(row = 4, column = 1, padx = 5, pady = 20, ipady = 2, ipadx = 20)
+        
+        # self.email_entry.grid(row = 4, column = 1, padx = 5, pady = 20, ipady = 2, ipadx = 20)
+
+        # #   Field face checkout
+        # email_lbl = Label(panel_right, text="Ảnh checkout", width = 20, compound = LEFT, font=("bold", 10))
+        # email_lbl.grid(row = 4, column = 0, padx = 110, pady = 20)
+
+        # self.email_entry = Entry(panel_right, width = 40, font=("bold", 10))
+        # self.email_entry.insert(0,self.timekeeping[5])
+        # self.email_entry.grid(row = 4, column = 2, padx = 5, pady = 20, ipady = 2, ipadx = 20)
 
         #   Button update
         update_btn = Button(panel_right)
 
-    def uploadAvatar(self,event):
-        pathFileFaces = os.path.abspath('data/face_train/' + str(self.employee[4]))
-        Path(pathFileFaces).mkdir(parents=True, exist_ok=True)
-        filename = filedialog.askopenfilename(initialdir=pathFileFaces,title="Select A File",filetypes=(('Image File','.jpg'),('All File',"*.*")))
-        im = Image.open(filename)
-
-        #   Update path avatar
-        self.updatePathAvatar(filename)
-        tkimage = ImageTk.PhotoImage(im)
-        self.lbl_avatar = Label(self.panel_left, image = tkimage)
-        self.lbl_avatar.place(x = 120, y = 0)
-        self.lbl_avatar.bind('<Double-1>',self.uploadAvatar)
-        self.root.mainloop()
-
-    def updatePathAvatar(self,pathImage):
-        filename = os.path.abspath('data/Models/Employee.xlsx')
-        df = pd.read_excel(filename)
-        df.loc[df['user_id'] == self.employee[4], 'avatar'] = pathImage
-
-        writer = pd.ExcelWriter(filename, engine='xlsxwriter')
-        df.to_excel(writer,index=False)
-        writer.save()
-
     def goToBack(self):
-        from .employee import EmployeeGUI
+        from .timekeeping import TimekeepingGUI
         self.root.destroy()
         frame = Tk()
-        employee = EmployeeGUI(frame)
+        timekeeping = TimekeepingGUI(frame)
