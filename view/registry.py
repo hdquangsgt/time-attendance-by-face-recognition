@@ -52,7 +52,7 @@ class RegistryForm(object):
         birth_lbl = Label(registry_frm, text="Ngày sinh", width = 20, compound = LEFT, font=("bold", 10))
         birth_lbl.grid(row = 2, column = 1, padx = 10, pady = 10)
 
-        self.birth_entry = CustomDateEntry(registry_frm)
+        self.birth_entry = CustomDateEntry(registry_frm, date_pattern='dd/MM/yyyy')
         self.birth_entry._set_text(self.birth_entry._date.strftime('%d/%m/%Y'))
         self.birth_entry.grid(row = 2, column = 2, padx = 10, pady = 10)
         
@@ -130,7 +130,7 @@ class RegistryForm(object):
         else:
             global errorFrame
             errorFrame = Tk()
-            errorFrame.geometry('180x80')
+            errorFrame.geometry('200x80')
             errorFrame.title('Kiểm tra dữ liệu nhập')
 
             if(validated[0]):

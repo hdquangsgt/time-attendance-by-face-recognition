@@ -1,8 +1,11 @@
 from tkinter import *
+from tkinter import ttk, filedialog
 from tkcalendar import *
+from .detail_timekeeping import DetailTimekeepingGUI
 import os
 import pandas as pd
 from .datepicker import CustomDateEntry
+from datetime import date
 
 class TimekeepingGUI(object):
     def __init__(self, root):
@@ -14,7 +17,7 @@ class TimekeepingGUI(object):
         bg_color = '#990099'
         
         #   Title monitor
-        title = Label(self.root, text='Chấm công', font=('time new roman',25,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
+        title = Label(self.root, text='Danh sách chấm công', font=('time new roman',25,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
         title.pack(fill = X)
 
         # Layouts menu
@@ -76,20 +79,56 @@ class TimekeepingGUI(object):
                         font = ('time new roman', 18, 'bold'))
         btn_logout.grid(row = 4, column = 0, padx = 5, pady = 150)
         
+        #   Panel right Screen
+        Panel_right = Frame(self.root, bg = bg_color, bd = 10, relief = RIDGE)
+        Panel_right.place(x = 500, y = 100, width = 840, height = 560)
+
+        Timekeeping_Frame = Frame(Panel_right, bg = bg_color)
+        Timekeeping_Frame.place(x = 0, y = 80, width = 820, height = 450)
+
         #   Table data timekeeping
-        Timekeeping_Frame = Frame(self.root, bd = 4, relief = RIDGE)
-        Timekeeping_Frame.place(x = 550, y = 100, width = 840, height = 560)
+        table_frame = Frame(Timekeeping_Frame, bd = 5, relief = RIDGE, bg = bg_color)
+        table_frame.place(x = 5, y = 100, width = 810, height = 350)
+
+        scroll_x = Scrollbar(table_frame,orient = HORIZONTAL)
+        scroll_y = Scrollbar(table_frame,orient = VERTICAL)
+
+        self.table_timekeeping = ttk.Treeview(
+            table_frame, 
+            columns = ('date_logtime', 'user_id', 'checkin_time','checkout_time'),
+            xscrollcommand = scroll_x.set,
+            yscrollcommand = scroll_y.set
+        )
+        scroll_x.pack(side = BOTTOM, fill = X)
+        scroll_y.pack(side = RIGHT, fill = Y)
+        scroll_x.config(command = self.table_timekeeping.xview)
+        scroll_y.config(command = self.table_timekeeping.yview)
+
+        self.table_timekeeping.heading('date_logtime', text = 'Ngày chấm công')
+        self.table_timekeeping.heading('user_id', text = 'Mã nhân viên')
+        self.table_timekeeping.heading('checkin_time', text = 'Giờ checkin')
+        self.table_timekeeping.heading('checkout_time', text = 'Giờ checkout')
+
+        self.table_timekeeping['show'] = 'headings'
+
+        self.table_timekeeping.column('date_logtime', width = 100)
+        self.table_timekeeping.column('user_id', width = 150)
+        self.table_timekeeping.column('checkin_time', width = 150)
+        self.table_timekeeping.column('checkout_time', width = 100)
+
+        self.loadData(self.table_timekeeping)
+        self.table_timekeeping.pack(fill = BOTH, expand = 1)
 
         #   Select datetime picker
-        lbl_timepicker = Label(Timekeeping_Frame, text = 'Ngày chấm công', font=('time new roman',14,'bold'))
+        lbl_timepicker = Label(Panel_right, text = 'Ngày chấm công', font=('time new roman',14,'bold'))
         lbl_timepicker.grid(row = 0, column = 0, pady = 25)
         
-        timepicker = CustomDateEntry(Timekeeping_Frame)
-        timepicker._set_text(timepicker._date.strftime('%d/%m/%Y'))
-        timepicker.grid(row = 0, column = 1, pady = 25)
-
+        self.timepicker = CustomDateEntry(Panel_right, date_pattern='dd/MM/yyyy')
+        self.timepicker._set_text(self.timepicker._date.strftime('%d/%m/%Y'))
+        self.timepicker.grid(row = 0, column = 1, pady = 25)
+        
         #   Button checkin employee
-        btn_checkin = Button(Timekeeping_Frame,
+        btn_checkin = Button(Panel_right,
             bd = 0,
             relief = "groove",
             compound = CENTER,
@@ -103,7 +142,7 @@ class TimekeepingGUI(object):
         btn_checkin.grid(row = 1, column = 0, padx = 25, pady = 15)
 
         #   Button checkout employee
-        btn_checkout = Button(Timekeeping_Frame,
+        btn_checkout = Button(Panel_right,
             bd = 0,
             relief = "groove",
             compound = CENTER,
@@ -116,46 +155,52 @@ class TimekeepingGUI(object):
             pady = 10)
         btn_checkout.grid(row = 1, column = 1, padx = 25, pady = 15)
 
-        #   Table data timekeeping
-        table_frame = Frame(Timekeeping_Frame, bd = 4, relief = RIDGE, bg = 'crimson')
-        table_frame.place(x = 0, y = 150, width = 830, height = 400)
+        #   Get data record
+        def getData():
+            selected = self.table_timekeeping.focus()
+            return self.table_timekeeping.item(selected, 'values')
 
-        scroll_x = Scrollbar(table_frame,orient = HORIZONTAL)
-        scroll_y = Scrollbar(table_frame,orient = VERTICAL)
+        #   Create binding click function
+        def selectTimekeepingDetail(e):
+            timekeeping = getData()
+            if timekeeping:
+                self.root.destroy()
+                frame = Tk()
+                frame = DetailTimekeepingGUI(frame,timekeeping)
+            else:
+                pass
 
-        table_timekeeping = ttk.Treeview(
-            table_frame, 
-            columns = ('date_logtime', 'user_id', 'checkin_time','checkout_time'),
-            xscrollcommand = scroll_x.set,
-            yscrollcommand = scroll_y.set
-        )
-        scroll_x.pack(side = BOTTOM, fill = X)
-        scroll_y.pack(side = RIGHT, fill = Y)
-        scroll_x.config(command = table_timekeeping.xview)
-        scroll_y.config(command = table_timekeeping.yview)
+        self.timekeepingData = {}
+        def selectTimekeepingData(e):
+            self.timekeepingData = getData()
 
-        table_timekeeping.heading('date_logtime', text = 'Ngày chấm công')
-        table_timekeeping.heading('user_id', text = 'Mã nhân viên')
-        table_timekeeping.heading('checkin_time', text = 'Giờ checkin')
-        table_timekeeping.heading('checkout_time', text = 'Giờ checkout')
+        #   Bindings
+        self.table_timekeeping.bind('<Double-1>', selectTimekeepingDetail)
+        self.table_timekeeping.bind('<ButtonRelease-1>', selectTimekeepingData)
 
-        table_timekeeping['show'] = 'headings'
-
-        table_timekeeping.column('date_logtime', width = 100)
-        table_timekeeping.column('user_id', width = 150)
-        table_timekeeping.column('checkin_time', width = 150)
-        table_timekeeping.column('checkout_time', width = 100)
-
-        self.loadData(table_timekeeping)
-        table_timekeeping.pack(fill = BOTH, expand = 1)
-
-    def loadData(self,employee_tree):
+    def loadData(self, timekeeping_tree, dateTimekeeping = None):
+        self.clearTree(timekeeping_tree)
         iid = 0
         filename = os.path.abspath('data/Models/Timekeeping.xlsx')
         df = pd.read_excel(filename)
 
+        if(dateTimekeeping):
+            df = df[df['date_logtime'] == dateTimekeeping]
+        else:
+            today = date.today()
+            df = df[df['date_logtime'] == today.strftime("%d/%m/%Y")]
+
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            employee_tree.insert('',index = 'end',value = row)
+            timekeeping_tree.insert('',index = 'end',value = row)
             iid = iid + 1
+
+    def clearTree(self,my_tree):
+        my_tree.delete(*my_tree.get_children())
+    
+    def checkin():
+        pass
+
+    def checkout():
+        pass

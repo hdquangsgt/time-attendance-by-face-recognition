@@ -1,5 +1,4 @@
 from tkcalendar import DateEntry
-import tkinter as tk
 
 class CustomDateEntry(DateEntry):
     def _select(self, event=None):

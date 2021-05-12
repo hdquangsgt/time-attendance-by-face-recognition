@@ -8,18 +8,18 @@ import xlsxwriter
 from .datepicker import CustomDateEntry
 from pathlib import Path
 
-class DetailEmployeeGUI(object):
-    def __init__(self, root, employee):
+class DetailTimekeepingGUI(object):
+    def __init__(self, root, timekeeping):
         self.root = root
-        self.root.title('Quản lý nhân viên')
+        self.root.title('Chấm công')
         self.root.geometry('1350x700+0+0')
         self.root.resizable(False, False)
 
         bg_color = '#990099'
-        self.employee = employee
+        self.timekeeping = timekeeping
 
         #   Title monitor
-        title = Label(self.root, text='Chi tiết nhân viên', font=('time new roman',24,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
+        title = Label(self.root, text='Chi tiết chấm công', font=('time new roman',24,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
         title.pack(fill = X)
 
         #   Panel left
@@ -110,7 +110,7 @@ class DetailEmployeeGUI(object):
         im = Image.open(filename)
 
         #   Update path avatar
-        self.updatePathAvatar('data/face_train/' + filename.split('data/face_train/')[1])
+        self.updatePathAvatar(filename)
         tkimage = ImageTk.PhotoImage(im)
         self.lbl_avatar = Label(self.panel_left, image = tkimage)
         self.lbl_avatar.place(x = 120, y = 0)
@@ -122,7 +122,7 @@ class DetailEmployeeGUI(object):
         df = pd.read_excel(filename)
         df.loc[df['user_id'] == self.employee[4], 'avatar'] = pathImage
 
-        writer = pd.ExcelWriter(filename, engine='xlsxwriter',datetime_format='dd/mm/yyyy')
+        writer = pd.ExcelWriter(filename, engine='xlsxwriter')
         df.to_excel(writer,index=False)
         writer.save()
 
@@ -131,4 +131,3 @@ class DetailEmployeeGUI(object):
         self.root.destroy()
         frame = Tk()
         employee = EmployeeGUI(frame)
-            
