@@ -31,7 +31,7 @@ class AddFaceGUI(object):
                     # mpDraw.draw_detection(img, detection)
                     bboxC = detection.location_data.relative_bounding_box
                     ih, iw, ic = img.shape
-                    bbox = int(bboxC.xmin * iw), int(bboxC.ymin * ih), int(bboxC.width * iw), int(bboxC.height * ih)
+                    bbox = int(bboxC.xmin * iw) - 20, int(bboxC.ymin * ih) - 45, int(bboxC.width * iw) + 40, int(bboxC.height * ih) + 50
 
                     if cv2.waitKey(1) & 0xFF == ord('b'):
                         timestr = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')
