@@ -1,11 +1,13 @@
 from tkinter import *
 from tkinter import ttk, filedialog
+from numpy import NaN
 from tkcalendar import *
 from .detail_timekeeping import DetailTimekeepingGUI
 import os
 import pandas as pd
 from .datepicker import CustomDateEntry
 from datetime import date
+import numpy as np
 
 class TimekeepingGUI(object):
     def __init__(self, root):
@@ -77,7 +79,7 @@ class TimekeepingGUI(object):
                         compound = CENTER,
                         command = logout,
                         font = ('time new roman', 18, 'bold'))
-        btn_logout.grid(row = 4, column = 0, padx = 5, pady = 150)
+        btn_logout.grid(row = 3, column = 0, padx = 5, pady = 180)
         
         #   Panel right Screen
         Panel_right = Frame(self.root, bg = bg_color, bd = 10, relief = RIDGE)
@@ -95,7 +97,7 @@ class TimekeepingGUI(object):
 
         self.table_timekeeping = ttk.Treeview(
             table_frame, 
-            columns = ('date_logtime', 'user_id', 'checkin_time','checkout_time'),
+            columns = ('id','date_logtime', 'user_id', 'checkin_time','checkout_time'),
             xscrollcommand = scroll_x.set,
             yscrollcommand = scroll_y.set
         )
@@ -104,6 +106,7 @@ class TimekeepingGUI(object):
         scroll_x.config(command = self.table_timekeeping.xview)
         scroll_y.config(command = self.table_timekeeping.yview)
 
+        self.table_timekeeping.heading('id', text = 'Số thứ tự')
         self.table_timekeeping.heading('date_logtime', text = 'Ngày chấm công')
         self.table_timekeeping.heading('user_id', text = 'Mã nhân viên')
         self.table_timekeeping.heading('checkin_time', text = 'Giờ checkin')
@@ -111,10 +114,11 @@ class TimekeepingGUI(object):
 
         self.table_timekeeping['show'] = 'headings'
 
-        self.table_timekeeping.column('date_logtime', width = 100)
-        self.table_timekeeping.column('user_id', width = 150)
-        self.table_timekeeping.column('checkin_time', width = 150)
-        self.table_timekeeping.column('checkout_time', width = 100)
+        self.table_timekeeping.column('id', width = 50, anchor=CENTER)
+        self.table_timekeeping.column('date_logtime', width = 100, anchor=CENTER)
+        self.table_timekeeping.column('user_id', width = 150, anchor=CENTER)
+        self.table_timekeeping.column('checkin_time', width = 150, anchor=CENTER)
+        self.table_timekeeping.column('checkout_time', width = 100, anchor=CENTER)
 
         self.loadData(self.table_timekeeping)
         self.table_timekeeping.pack(fill = BOTH, expand = 1)
@@ -186,9 +190,13 @@ class TimekeepingGUI(object):
         self.table_timekeeping.bind('<ButtonRelease-1>', selectTimekeepingData)
 
     def loadData(self, timekeeping_tree, dateTimekeeping = None):
+        self.clearTree(timekeeping_tree)
         iid = 0
         filename = os.path.abspath('data/Models/Timekeeping.xlsx')
+        filename_employee = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
+        df1 = pd.read_excel(filename_employee)
+
         if(dateTimekeeping):
             df = df[df['date_logtime'] == dateTimekeeping]
         else:
@@ -198,9 +206,16 @@ class TimekeepingGUI(object):
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            # if(row['face_checkin']):
-            timekeeping_tree.insert('',index = 'end',value = row)
-            iid = iid + 1
+            row[0] = row[0].strftime('%d/%m/%Y')
+            row[3] = str(row[3])
+            if(row[3] != 'nan'):
+                row[3] = ' '
+            employee = df1[df1.user_id == row[1]].iloc[0]
+            data = [iid + 1, row[0] , row[1], row[2], row[3], row[4], row[5]]
+
+            if(str(employee.avatar) != 'nan'):
+                timekeeping_tree.insert('',index = 'end', iid = iid, value = data)
+                iid = iid + 1
 
     def clearTree(self,my_tree):
         my_tree.delete(*my_tree.get_children())

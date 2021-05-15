@@ -48,9 +48,10 @@ class AddFaceGUI(object):
                     cv2.putText(img, f'Total Face: {int(count)}', (20, 50), cv2.FONT_HERSHEY_PLAIN, 2
                             , (192, 0, 215), 2)
             cv2.imshow('Video', img)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-            
+
+            if (cv2.waitKey(1) & 0xFF == ord('q')):
+                if(count >= 100):
+                    break
         video_capture.release()
         cv2.destroyAllWindows()
     

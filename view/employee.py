@@ -79,7 +79,7 @@ class EmployeeGUI(object):
                         compound = CENTER,
                         command = logout,
                         font = ('time new roman', 18, 'bold'))
-        btn_logout.grid(row = 4, column = 0, padx = 5, pady = 150)
+        btn_logout.grid(row = 4, column = 0, padx = 5, pady = 180)
 
         #   Panel right Screen
         Panel_right = Frame(self.root, bg = bg_color, bd = 10, relief = RIDGE)
@@ -114,10 +114,10 @@ class EmployeeGUI(object):
 
         self.table_employee['show'] = 'headings'
 
-        self.table_employee.column('id', width = 100)
-        self.table_employee.column('name', width = 150)
-        self.table_employee.column('birth', width = 100)
-        self.table_employee.column('email', width = 150)
+        self.table_employee.column('id', width = 100, anchor=CENTER)
+        self.table_employee.column('name', width = 150, anchor=CENTER)
+        self.table_employee.column('birth', width = 100, anchor=CENTER)
+        self.table_employee.column('email', width = 150, anchor=CENTER)
 
         self.loadData(self.table_employee)
         self.table_employee.pack(fill = BOTH, expand = 1)
@@ -243,7 +243,7 @@ class EmployeeGUI(object):
         for row in df_rows:
             row[3] = row[3].strftime('%d/%m/%Y')
             data = [row[0],row[2],row[3],row[4],row[1],row[5]]
-            employee_tree.insert('',index = 'end', iid = row[0],value=data)
+            employee_tree.insert('',index = 'end', iid = iid,value=data)
             iid = iid + 1
 
     def clearTree(self,my_tree):
@@ -255,10 +255,9 @@ class EmployeeGUI(object):
         registryForm = RegistryForm(registry)
 
     def addFace(self):
-        import cv2
         if(self.employeeData):
             Path(os.path.abspath('data/face_train/' + self.employeeData[4])).mkdir(parents=True, exist_ok=True)
-            addFaceFrame = AddFaceGUI(employee = self.employeeData)
+            AddFaceGUI(employee = self.employeeData)
         self.loadData(self.table_employee)
         return
 
@@ -269,6 +268,7 @@ class EmployeeGUI(object):
 
     def trainFace(self):
         print("test")
+        pass
 
     def deleteEmployee(self):
         pass

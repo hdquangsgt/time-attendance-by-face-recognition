@@ -27,20 +27,20 @@ class DetailTimekeepingGUI(object):
         self.panel_left.place(x = 20, y = 100, width = 400, height = 560)
         
         #   Title
-        self.lbl_title_avt = Label(self.panel_left, text = 'Hình đại diện', bd = 2, relief = RIDGE, bg = bg_color, fg = 'white', font = ('time new roman', 18))
+        self.lbl_title_avt = Label(self.panel_left, text = 'Ảnh gốc', bg = bg_color, fg = 'white', font = ('time new roman', 20))
         self.lbl_title_avt.pack(fill = X)
 
         #   Load Avatar
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
-        fileImage = df[df['user_id'] == self.timekeeping[1]].iloc[0]['avatar']
+        fileImage = df[df['user_id'] == self.timekeeping[2]].iloc[0]['avatar']
 
         im = Image.open(os.path.abspath(fileImage))
         resizeBG = im.resize((180,180), Image.ANTIALIAS)
 
         self.avatar = ImageTk.PhotoImage(resizeBG)
         self.lbl_avatar = Label(self.panel_left, image = self.avatar)
-        self.lbl_avatar.place(x = 120, y = 50)
+        self.lbl_avatar.place(x = 100, y = 50)
 
         #   Button back
         btn_back = Button(self.panel_left,
@@ -48,10 +48,10 @@ class DetailTimekeepingGUI(object):
                         bg = 'gray',
                         fg = 'white',
                         compound = CENTER,
-                        width = 25,
-                        font = ('tim new roman', 20),
+                        width = 27,
+                        font = ('tim new roman', 18),
                         command = self.goToBack)
-        btn_back.place(x = 0, y = 300)
+        btn_back.place(x = 2, y = 505)
 
         #   Panel right
         self.panel_right = Frame(self.root, bg = bg_color)
@@ -64,7 +64,7 @@ class DetailTimekeepingGUI(object):
         id_lbl.grid(row = 0, column = 0, padx = 110, pady = 20)
 
         self.id_value_lbl = Entry(self.panel_right, width = 40, font=("bold", 10))
-        self.id_value_lbl.insert(0,self.timekeeping[0].strftime('%d/%m/%Y'))
+        self.id_value_lbl.insert(0,self.timekeeping[1])
         self.id_value_lbl.config(state='disabled')
         self.id_value_lbl.grid(row = 0, column = 1, padx = 10, pady = 20, ipady = 1, ipadx = 20)
 
@@ -73,7 +73,7 @@ class DetailTimekeepingGUI(object):
         userId_lbl.grid(row = 1, column = 0, padx = 110, pady = 20)
 
         self.userId_value_lbl = Entry(self.panel_right, width = 40, font=("bold", 10))
-        self.userId_value_lbl.insert(0,self.timekeeping[1])
+        self.userId_value_lbl.insert(0,self.timekeeping[2])
         self.userId_value_lbl.config(state='disabled')
         self.userId_value_lbl.grid(row = 1, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
 
@@ -82,7 +82,7 @@ class DetailTimekeepingGUI(object):
         checkin_time_lbl.grid(row = 2, column = 0, padx = 110, pady = 20)
 
         self.checkin_entry = Entry(self.panel_right, width = 40, font=("bold", 10))
-        self.checkin_entry.insert(0,self.timekeeping[2])
+        self.checkin_entry.insert(0,self.timekeeping[3])
         self.checkin_entry.grid(row = 2, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
 
         #   Field checkout time
@@ -90,15 +90,15 @@ class DetailTimekeepingGUI(object):
         checkout_time_lbl.grid(row = 3, column = 0, padx = 110, pady = 20)
 
         self.checkout_entry = Entry(self.panel_right, width = 40, font=("bold", 10))
-        self.checkout_entry.insert(0,self.timekeeping[3])
+        self.checkout_entry.insert(0,self.timekeeping[4])
         self.checkout_entry.grid(row = 3, column = 1, padx = 5, pady = 10, ipady = 2, ipadx = 20)
         
         #   Field face checkin
         face_checkin_lbl = Label(self.panel_right, text="Ảnh checkin", width = 20, compound = LEFT, font=("bold", 10))
         face_checkin_lbl.grid(row = 4, column = 0, padx = 110, pady = 20)
 
-        if(os.path.exists(self.timekeeping[4]) and os.path.isfile(self.timekeeping[4])):
-            imCheckin = Image.open(os.path.abspath(self.timekeeping[4]))
+        if(os.path.exists(self.timekeeping[5]) & os.path.isfile(self.timekeeping[5])):
+            imCheckin = Image.open(os.path.abspath(self.timekeeping[5]))
             resizeImCheckin = imCheckin.resize((180,180), Image.ANTIALIAS)
             imgFaceCheckin = ImageTk.PhotoImage(resizeImCheckin)
         self.faceCheckin = Label(self.panel_right, image = imgFaceCheckin)
@@ -108,7 +108,7 @@ class DetailTimekeepingGUI(object):
         face_checkout_lbl = Label(self.panel_right, text="Ảnh checkout", width = 20, compound = LEFT, font=("bold", 10))
         face_checkout_lbl.grid(row = 4, column = 1, padx = 110, pady = 20)
 
-        if(os.path.exists(self.timekeeping[5]) and os.path.isfile(self.timekeeping[5])):
+        if(os.path.exists(self.timekeeping[6]) and os.path.isfile(self.timekeeping[6])):
             imCheckin = Image.open(os.path.abspath(self.timekeeping[5]))
             resizeImCheckout = imCheckin.resize((180,180), Image.ANTIALIAS)
         else:
@@ -118,8 +118,6 @@ class DetailTimekeepingGUI(object):
         self.faceCheckout = Label(self.panel_right, image = imgFaceCheckout)
         self.faceCheckout.grid(row = 5, column = 1, padx = 10, pady = 20)
 
-        #   Button update
-        update_btn = Button(self.panel_right)
         self.root.mainloop()
 
     def goToBack(self):
@@ -127,3 +125,4 @@ class DetailTimekeepingGUI(object):
         self.root.destroy()
         frame = Tk()
         timekeeping = TimekeepingGUI(frame)
+        
