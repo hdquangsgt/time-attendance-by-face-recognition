@@ -1,23 +1,16 @@
 from tkinter import *
-from PIL import Image, ImageTk
-from tkinter import filedialog
+from view.datepicker import CustomDateEntry
 
+def callback(asdv):
+    print(asdv.get())
 
-def UploadAction(event=None):
-    filename = filedialog.askopenfilename(filetypes=[("Image File",'.jpg')])
-    pic = Toplevel()
-
-    im = Image.open(filename)
-    tkimage = ImageTk.PhotoImage(im)
-    myvar=Label(pic,image = tkimage)
-    myvar.image = tkimage
-    myvar.pack()
-
-    pic.mainloop()
 
 root = Tk()
-button = Button(root, text='Open', command=UploadAction)
-button.pack()
+sv = StringVar()
+sv.trace("w", lambda name, index, mode, sv=sv: callback(sv))
+e = CustomDateEntry(root, date_pattern='dd/MM/yyyy', textvariable = sv)
+e._set_text(e._date.strftime('%d/%m/%Y'))
+e.config(width = 30)
+e.pack()
 
 root.mainloop()
-

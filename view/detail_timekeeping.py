@@ -50,62 +50,73 @@ class DetailTimekeepingGUI(object):
         btn_back.place(x = 0, y = 300)
 
         #   Panel right
-        panel_right = Frame(self.root, bg = bg_color)
-        panel_right.place(x = 450, y = 100, width = 840, height = 560)
+        self.panel_right = Frame(self.root, bg = bg_color)
+        self.panel_right.place(x = 450, y = 100, width = 840, height = 560)
 
         #   Load Timekeepipng Detail Information
 
         #   Field date logtime
-        id_lbl = Label(panel_right, text = 'Ngày chấm công', width = 20, compound = LEFT, font=("bold", 10))
+        id_lbl = Label(self.panel_right, text = 'Ngày chấm công', width = 20, compound = LEFT, font=("bold", 10))
         id_lbl.grid(row = 0, column = 0, padx = 110, pady = 20)
 
-        self.id_value_lbl = Entry(panel_right, width = 40, font=("bold", 10))
+        self.id_value_lbl = Entry(self.panel_right, width = 40, font=("bold", 10))
         self.id_value_lbl.insert(0,self.timekeeping[0])
         self.id_value_lbl.config(state='disabled')
         self.id_value_lbl.grid(row = 0, column = 1, padx = 10, pady = 20, ipady = 1, ipadx = 20)
 
         #   Field user id
-        userId_lbl = Label(panel_right, text = 'Mã nhân viên', width = 20, compound = LEFT, font=("bold", 10))
+        userId_lbl = Label(self.panel_right, text = 'Mã nhân viên', width = 20, compound = LEFT, font=("bold", 10))
         userId_lbl.grid(row = 1, column = 0, padx = 110, pady = 20)
 
-        self.userId_value_lbl = Entry(panel_right, width = 40, font=("bold", 10))
+        self.userId_value_lbl = Entry(self.panel_right, width = 40, font=("bold", 10))
         self.userId_value_lbl.insert(0,self.timekeeping[1])
         self.userId_value_lbl.config(state='disabled')
         self.userId_value_lbl.grid(row = 1, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
 
         #   Field checkin time
-        checkin_time_lbl = Label(panel_right, text="Giờ checkin", width = 20, compound = LEFT, font=("bold", 10))
+        checkin_time_lbl = Label(self.panel_right, text="Giờ checkin", width = 20, compound = LEFT, font=("bold", 10))
         checkin_time_lbl.grid(row = 2, column = 0, padx = 110, pady = 20)
 
-        self.checkin_entry = Entry(panel_right, width = 40, font=("bold", 10))
+        self.checkin_entry = Entry(self.panel_right, width = 40, font=("bold", 10))
         self.checkin_entry.insert(0,self.timekeeping[2])
         self.checkin_entry.grid(row = 2, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
 
         #   Field checkout time
-        checkout_time_lbl = Label(panel_right, text="Giờ checkout", width = 20, compound = LEFT, font=("bold", 10))
+        checkout_time_lbl = Label(self.panel_right, text="Giờ checkout", width = 20, compound = LEFT, font=("bold", 10))
         checkout_time_lbl.grid(row = 3, column = 0, padx = 110, pady = 20)
 
-        self.checkout_entry = Entry(panel_right, width = 40, font=("bold", 10))
+        self.checkout_entry = Entry(self.panel_right, width = 40, font=("bold", 10))
         self.checkout_entry.insert(0,self.timekeeping[3])
         self.checkout_entry.grid(row = 3, column = 1, padx = 5, pady = 10, ipady = 2, ipadx = 20)
         
-        # #   Field face checkin
-        # email_lbl = Label(panel_right, text="Ảnh checkin", width = 20, compound = LEFT, font=("bold", 10))
-        # email_lbl.grid(row = 4, column = 0, padx = 110, pady = 20)
+        #   Field face checkin
+        face_checkin_lbl = Label(self.panel_right, text="Ảnh checkin", width = 20, compound = LEFT, font=("bold", 10))
+        face_checkin_lbl.grid(row = 4, column = 0, padx = 110, pady = 20)
 
+        if(os.path.exists(self.timekeeping[4]) and os.path.isfile(self.timekeeping[4])):
+            imCheckin = Image.open(os.path.abspath(self.timekeeping[4]))
+            resizeImCheckin = imCheckin.resize((180,180), Image.ANTIALIAS)
+            imgFaceCheckin = ImageTk.PhotoImage(resizeImCheckin)
+        self.faceCheckin = Label(self.panel_right, image = imgFaceCheckin)
+        self.faceCheckin.grid(row = 5, column = 0, padx = 10, pady = 20)
         
-        # self.email_entry.grid(row = 4, column = 1, padx = 5, pady = 20, ipady = 2, ipadx = 20)
+        #   Field face checkout
+        face_checkout_lbl = Label(self.panel_right, text="Ảnh checkout", width = 20, compound = LEFT, font=("bold", 10))
+        face_checkout_lbl.grid(row = 4, column = 1, padx = 110, pady = 20)
 
-        # #   Field face checkout
-        # email_lbl = Label(panel_right, text="Ảnh checkout", width = 20, compound = LEFT, font=("bold", 10))
-        # email_lbl.grid(row = 4, column = 0, padx = 110, pady = 20)
-
-        # self.email_entry = Entry(panel_right, width = 40, font=("bold", 10))
-        # self.email_entry.insert(0,self.timekeeping[5])
-        # self.email_entry.grid(row = 4, column = 2, padx = 5, pady = 20, ipady = 2, ipadx = 20)
+        if(os.path.exists(self.timekeeping[5]) and os.path.isfile(self.timekeeping[5])):
+            imCheckin = Image.open(os.path.abspath(self.timekeeping[5]))
+            resizeImCheckout = imCheckin.resize((180,180), Image.ANTIALIAS)
+        else:
+            imCheckin = Image.open(os.path.abspath('view/images/image-default-checkout.png'))
+            resizeImCheckout = imCheckin.resize((180,180), Image.ANTIALIAS)
+        imgFaceCheckout = ImageTk.PhotoImage(resizeImCheckout)
+        self.faceCheckout = Label(self.panel_right, image = imgFaceCheckout)
+        self.faceCheckout.grid(row = 5, column = 1, padx = 10, pady = 20)
 
         #   Button update
-        update_btn = Button(panel_right)
+        update_btn = Button(self.panel_right)
+        self.root.mainloop()
 
     def goToBack(self):
         from .timekeeping import TimekeepingGUI

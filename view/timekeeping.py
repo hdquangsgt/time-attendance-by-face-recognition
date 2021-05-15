@@ -122,8 +122,14 @@ class TimekeepingGUI(object):
         #   Select datetime picker
         lbl_timepicker = Label(Panel_right, text = 'Ngày chấm công', bg = bg_color, fg= 'white', font=('time new roman',14,'bold'))
         lbl_timepicker.grid(row = 0, column = 0, padx = 10, pady = 25)
-        
-        self.timepicker = CustomDateEntry(Panel_right, width = 30, date_pattern='dd/MM/yyyy')
+
+        def callback(date):
+            self.loadData(self.table_timekeeping, date.get())
+
+        self.selectedDate = StringVar()
+        self.selectedDate.trace("w", lambda name, index, mode, selectedDate=self.selectedDate: callback(self.selectedDate))
+
+        self.timepicker = CustomDateEntry(Panel_right, date_pattern='dd/MM/yyyy', textvariable = self.selectedDate)
         self.timepicker._set_text(self.timepicker._date.strftime('%d/%m/%Y'))
         self.timepicker.config(width = 30)
         self.timepicker.grid(row = 0, column = 1,padx = 20, pady = 25, ipady = 4, ipadx = 20)
@@ -180,11 +186,9 @@ class TimekeepingGUI(object):
         self.table_timekeeping.bind('<ButtonRelease-1>', selectTimekeepingData)
 
     def loadData(self, timekeeping_tree, dateTimekeeping = None):
-        self.clearTree(timekeeping_tree)
         iid = 0
         filename = os.path.abspath('data/Models/Timekeeping.xlsx')
         df = pd.read_excel(filename)
-
         if(dateTimekeeping):
             df = df[df['date_logtime'] == dateTimekeeping]
         else:

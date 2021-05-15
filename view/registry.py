@@ -120,7 +120,7 @@ class RegistryForm(object):
                 name,
                 self.birth_entry.get_date(),
                 self.email_entry.get(),
-                ''
+                'view/images/avatar-default.png'
             ]
             self.addDataExcel(data, filename)
             self.createFolder(user_id)
