@@ -49,7 +49,7 @@ class DetailEmployeeGUI(object):
                         width = 25,
                         font = ('tim new roman', 20),
                         command = self.goToBack)
-        btn_back.place(x = 0, y = 300)
+        btn_back.pack(x = 0, y = 300)
 
         #   Panel right
         panel_right = Frame(self.root, bg = bg_color)
@@ -101,7 +101,8 @@ class DetailEmployeeGUI(object):
         self.email_entry.grid(row = 4, column = 1, padx = 5, pady = 20, ipady = 2, ipadx = 20)
 
         #   Button update
-        update_btn = Button(panel_right)
+        update_btn = Button(panel_right, text='Cập nhật')
+        # update_btn.
 
     def uploadAvatar(self,event):
         pathFileFaces = os.path.abspath('data/face_train/' + str(self.employee[4]))

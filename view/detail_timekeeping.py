@@ -26,6 +26,10 @@ class DetailTimekeepingGUI(object):
         self.panel_left = Frame(self.root, bd = 4, relief = RIDGE, bg = bg_color)
         self.panel_left.place(x = 20, y = 100, width = 400, height = 560)
         
+        #   Title
+        self.lbl_title_avt = Label(self.panel_left, text = 'Hình đại diện', bd = 2, relief = RIDGE, bg = bg_color, fg = 'white', font = ('time new roman', 18))
+        self.lbl_title_avt.pack(fill = X)
+
         #   Load Avatar
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
@@ -36,7 +40,7 @@ class DetailTimekeepingGUI(object):
 
         self.avatar = ImageTk.PhotoImage(resizeBG)
         self.lbl_avatar = Label(self.panel_left, image = self.avatar)
-        self.lbl_avatar.place(x = 120, y = 0)
+        self.lbl_avatar.place(x = 120, y = 50)
 
         #   Button back
         btn_back = Button(self.panel_left,
@@ -60,7 +64,7 @@ class DetailTimekeepingGUI(object):
         id_lbl.grid(row = 0, column = 0, padx = 110, pady = 20)
 
         self.id_value_lbl = Entry(self.panel_right, width = 40, font=("bold", 10))
-        self.id_value_lbl.insert(0,self.timekeeping[0])
+        self.id_value_lbl.insert(0,self.timekeeping[0].strftime('%d/%m/%Y'))
         self.id_value_lbl.config(state='disabled')
         self.id_value_lbl.grid(row = 0, column = 1, padx = 10, pady = 20, ipady = 1, ipadx = 20)
 

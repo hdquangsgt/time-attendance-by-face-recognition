@@ -198,6 +198,7 @@ class TimekeepingGUI(object):
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
+            # if(row['face_checkin']):
             timekeeping_tree.insert('',index = 'end',value = row)
             iid = iid + 1
 
