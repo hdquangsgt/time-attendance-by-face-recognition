@@ -101,6 +101,9 @@ class DetailTimekeepingGUI(object):
             imCheckin = Image.open(os.path.abspath(self.timekeeping[5]))
             resizeImCheckin = imCheckin.resize((180,180), Image.ANTIALIAS)
             imgFaceCheckin = ImageTk.PhotoImage(resizeImCheckin)
+        else:
+            imCheckin = Image.open(os.path.abspath('view/images/image-default-checkout.png'))
+            resizeImCheckout = imCheckin.resize((180,180), Image.ANTIALIAS)
         self.faceCheckin = Label(self.panel_right, image = imgFaceCheckin)
         self.faceCheckin.grid(row = 5, column = 0, padx = 10, pady = 20)
         
@@ -108,12 +111,12 @@ class DetailTimekeepingGUI(object):
         face_checkout_lbl = Label(self.panel_right, text="Ảnh checkout", width = 20, compound = LEFT, font=("bold", 10))
         face_checkout_lbl.grid(row = 4, column = 1, padx = 110, pady = 20)
 
-        if(os.path.exists(self.timekeeping[6]) and os.path.isfile(self.timekeeping[6])):
-            imCheckin = Image.open(os.path.abspath(self.timekeeping[5]))
-            resizeImCheckout = imCheckin.resize((180,180), Image.ANTIALIAS)
+        if(os.path.exists(self.timekeeping[6]) & os.path.isfile(self.timekeeping[6])):
+            imCheckout = Image.open(os.path.abspath(self.timekeeping[5]))
+            resizeImCheckout = imCheckout.resize((180,180), Image.ANTIALIAS)
         else:
-            imCheckin = Image.open(os.path.abspath('view/images/image-default-checkout.png'))
-            resizeImCheckout = imCheckin.resize((180,180), Image.ANTIALIAS)
+            imCheckout = Image.open(os.path.abspath('view/images/image-default-checkout.png'))
+            resizeImCheckout = imCheckout.resize((180,180), Image.ANTIALIAS)
         imgFaceCheckout = ImageTk.PhotoImage(resizeImCheckout)
         self.faceCheckout = Label(self.panel_right, image = imgFaceCheckout)
         self.faceCheckout.grid(row = 5, column = 1, padx = 10, pady = 20)
