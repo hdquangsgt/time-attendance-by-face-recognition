@@ -1,4 +1,4 @@
-- Checkin:
+- Checkin: xong
 	- Show camera, load model, load data face, hoặc dùng SVM.
 	- Khi detect và nhận diện khuôn mặt xong sẽ lưu vào time keeping kèm theo đường dẫn đến ảnh được dùng để lưu.
 		- Sẽ tạo ra 1 record mới tương ứng
