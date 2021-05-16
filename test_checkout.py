@@ -11,8 +11,6 @@ from datetime import datetime
 from openpyxl import load_workbook
 from pathlib import Path
 
-filename = 'data/Models/Timekeeping.xlsx'
-df = pd.read_excel(filename)
 
 video_capture = cv2.VideoCapture(0)
 
@@ -23,21 +21,22 @@ faceDetection = mpFaceDetect.FaceDetection(0.8)
 
 SVM = pickle.load(open("Models/model_using_svm.sav", "rb"))
 
+filename = 'data/Models/Timekeeping.xlsx'
+df = pd.read_excel(filename)
+
 get_date = datetime.utcnow().strftime('%d/%m/%Y')
 
-data_get_date = df[(df['date_logtime'] == get_date)]
-user_in_data_get_date = data_get_date['user_id'].tolist()
+data_get_null = df[(df['face_checkout'].isnull()) & (df['checkout_time'].isnull())]
+user_in_data_get_null = data_get_null['user_id'].tolist()
 
-def addDataExcel(data, filename):
+def UpdateCheckOut(data, filename):
     wb_obj = load_workbook(filename)
     sheet_obj = wb_obj.active
-    row = sheet_obj.max_row
-    column = sheet_obj.max_column
-    for j in range(1, column+1):
-        sheet_obj.cell(row = row + 1, column= j, value=data[j-1])
+    
+    sheet_obj.cell(row = data[0], column= 4, value=data[1])
+    sheet_obj.cell(row = data[0], column= 6, value=data[2])
 
     wb_obj.save(filename)
-
 
 model = FaceNet()
 
@@ -82,29 +81,28 @@ while True:
                 
                 result = SVM.predict(np.array(face_feature))
                 proba = SVM.predict_proba(np.array(face_feature))
-                print(proba)
+                
                 fancyBox(img, bbox)
                 cv2.putText(img, str(result[0]), (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                print(result[0])
+                print(proba, ' -> ', result[0])
+
                 
-                if result[0] not in user_in_data_get_date:
+
+                if result[0] in user_in_data_get_null:
                     timestr = datetime.now().strftime('%H-%M-%S-%f')
-                    path_checkin = "data/timekeeping/checkin" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(result[0]) + '/'
-                    Path(path_checkin).mkdir(parents=True, exist_ok=True)
+                    path_checkout = "data/timekeeping/checkout" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(result[0]) + '/'
+                    Path(path_checkout).mkdir(parents=True, exist_ok=True)
 
-                    cv2.imwrite(path_checkin + str(timestr) + ".jpg", roi_color)
-
+                    cv2.imwrite(path_checkout + str(timestr) + ".jpg", roi_color)
+                    row_index = df.loc[(df.date_logtime == get_date) & (df.user_id == result[0])].index[0]
                     data = [
-                                datetime.now().strftime('%d/%m/%Y'), 
-                                result[0],
-                                datetime.now().strftime('%H:%M:%S'), 
-                                '', 
-                                path_checkin + str(timestr) + ".jpg", 
-                                ''
+                                row_index + 2,
+                                datetime.now().strftime('%H:%M:%S'),
+                                path_checkout + str(timestr) + ".jpg"
                             ]
-
-                    addDataExcel(data, filename)
-                    user_in_data_get_date.append(result[0])
+                    UpdateCheckOut(data, filename)
+                    user_in_data_get_null.remove(result[0])
+                    
                 
     cv2.imshow('Video', img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
