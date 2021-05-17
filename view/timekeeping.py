@@ -8,6 +8,8 @@ import pandas as pd
 from .datepicker import CustomDateEntry
 from datetime import date
 import numpy as np
+from .checkin import CheckIn
+from .checkout import CheckOut
 
 class TimekeepingGUI(object):
     def __init__(self, root):
@@ -149,7 +151,8 @@ class TimekeepingGUI(object):
             activeforeground = "pink",
             activebackground = "white",
             font = ('time new roman', 13, 'bold'),
-            pady = 10)
+            pady = 10,
+            command = self.checkin)
         btn_checkin.grid(row = 1, column = 0, padx = 25, pady = 15)
 
         #   Button checkout employee
@@ -163,7 +166,8 @@ class TimekeepingGUI(object):
             activeforeground = "pink",
             activebackground = "white",
             font = ('time new roman', 13, 'bold'),
-            pady = 10)
+            pady = 10,
+            command = self.checkout)
         btn_checkout.grid(row = 1, column = 1, padx = 25, pady = 15)
 
         #   Get data record
@@ -206,9 +210,8 @@ class TimekeepingGUI(object):
         #   Put data in treeview
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
-            row[0] = row[0].strftime('%d/%m/%Y')
             row[3] = str(row[3])
-            if(row[3] != 'nan'):
+            if(row[3] == 'nan'):
                 row[3] = ' '
             employee = df1[df1.user_id == row[1]].iloc[0]
             data = [iid + 1, row[0] , row[1], row[2], row[3], row[4], row[5]]
@@ -221,11 +224,14 @@ class TimekeepingGUI(object):
         my_tree.delete(*my_tree.get_children())
     
     def selectDate(self,e):
-        print('hello')
         self.loadData(self.table_timekeeping,self.timepicker.get_date())
 
-    def checkin():
-        pass
+    def checkin(self):
+        CheckIn()
+        self.loadData(self.table_timekeeping)
+        return
 
-    def checkout():
-        pass
+    def checkout(self):
+        CheckOut()
+        self.loadData(self.table_timekeeping)
+        return

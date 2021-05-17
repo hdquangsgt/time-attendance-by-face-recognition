@@ -129,7 +129,7 @@ class DetailEmployeeGUI(object):
         df = pd.read_excel(filename)
         df.loc[df['user_id'] == self.employee[4], 'avatar'] = pathImage
 
-        writer = pd.ExcelWriter(filename, engine='xlsxwriter',datetime_format='dd/mm/yyyy')
+        writer = pd.ExcelWriter(filename, engine='xlsxwriter', datetime_format='dd/mm/yyyy')
         df.to_excel(writer,index=False)
         writer.save()
 

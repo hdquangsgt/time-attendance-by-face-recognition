@@ -105,7 +105,7 @@ while True:
 
                     addDataExcel(data, filename)
                     user_in_data_get_date.append(result[0])
-                
+
     cv2.imshow('Video', img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

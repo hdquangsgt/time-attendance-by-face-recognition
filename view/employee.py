@@ -252,7 +252,7 @@ class EmployeeGUI(object):
     def registry(self):
         self.root.destroy()
         registry = Tk()
-        registryForm = RegistryForm(registry)
+        RegistryForm(registry)
 
     def addFace(self):
         if(self.employeeData):

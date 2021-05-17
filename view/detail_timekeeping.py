@@ -34,9 +34,12 @@ class DetailTimekeepingGUI(object):
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
         fileImage = df[df['user_id'] == self.timekeeping[2]].iloc[0]['avatar']
-
-        im = Image.open(os.path.abspath(fileImage))
-        resizeBG = im.resize((180,180), Image.ANTIALIAS)
+        if(fileImage != 'nan' and os.path.exists(fileImage)):
+            im = Image.open(os.path.abspath(fileImage))
+            resizeBG = im.resize((180,180), Image.ANTIALIAS)
+        else:
+            imageBG = Image.open(os.path.abspath('view/images/avatar-default.png'))
+            resizeBG = imageBG.resize((180,180), Image.ANTIALIAS)
 
         self.avatar = ImageTk.PhotoImage(resizeBG)
         self.lbl_avatar = Label(self.panel_left, image = self.avatar)
