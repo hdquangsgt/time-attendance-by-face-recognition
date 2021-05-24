@@ -10,7 +10,11 @@ import pandas as pd
 from datetime import datetime
 from openpyxl import load_workbook
 from pathlib import Path
+import pyttsx3
+import os
 
+engine = pyttsx3.init()
+voices = engine.getProperty("voices")
 filename = 'data/Models/Timekeeping.xlsx'
 df = pd.read_excel(filename)
 
@@ -26,7 +30,7 @@ class CheckOut(object):
         get_date = datetime.utcnow().strftime('%d/%m/%Y')
         data_get_null = df[(df['face_checkout'].isnull()) & (df['checkout_time'].isnull())]
         user_in_data_get_null = data_get_null['user_id'].tolist()
-
+        
         model = FaceNet()
 
         while True:
@@ -60,18 +64,31 @@ class CheckOut(object):
 
                         if result[0] in user_in_data_get_null:
                             timestr = datetime.now().strftime('%H-%M-%S-%f')
-                            path_checkout = "data/timekeeping/checkout/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(result[0]) + '/'
-                            Path(path_checkout).mkdir(parents=True, exist_ok=True)
+                            
+                            row_index = df.loc[(df.date_logtime == get_date) & (df.user_id == result[0])]
 
-                            cv2.imwrite(path_checkout + str(timestr) + ".jpg", roi_color)
-                            row_index = df.loc[(df.date_logtime == get_date) & (df.user_id == result[0])].index[0]
-                            data = [
-                                        row_index + 2,
-                                        datetime.now().strftime('%H:%M:%S'),
-                                        path_checkout + str(timestr) + ".jpg"
-                                    ]
-                            self.updateCheckOut(data, filename)
-                            user_in_data_get_null.remove(result[0])
+                            if(row_index.empty):
+                                pass
+                            else:
+                                filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
+                                employees = pd.read_excel(filenameEmployee)
+                                nameEmployee = employees.loc[employees['user_id'] == result[0], 'name']
+                                print(nameEmployee)
+                                path_checkout = "data/timekeeping/checkout/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(result[0]) + '/'
+                                Path(path_checkout).mkdir(parents=True, exist_ok=True)
+                                cv2.imwrite(path_checkout + str(timestr) + ".jpg", roi_color)
+
+                                engine.setProperty("voice",voices[1].id)
+                                engine.say("Tạm biệt " + str(nameEmployee.index[0]))
+                                engine.runAndWait()
+
+                                data = [
+                                            row_index.index[0] + 2,
+                                            datetime.now().strftime('%H:%M:%S'),
+                                            path_checkout + str(timestr) + ".jpg"
+                                        ]
+                                self.updateCheckOut(data, filename)
+                                user_in_data_get_null.remove(result[0])
 
             cv2.imshow('Video', img)
             if cv2.waitKey(1) & 0xFF == ord('q'):

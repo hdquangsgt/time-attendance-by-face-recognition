@@ -131,13 +131,14 @@ class RegistryForm(object):
         else:
             global errorFrame
             errorFrame = Tk()
-            errorFrame.geometry('200x80')
+            errorFrame.geometry('240x80')
+            errorFrame.resizable(False, False)
             errorFrame.title('Kiểm tra dữ liệu nhập')
 
             if(validated[0]):
-                Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 20, pady = 5)
+                Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 50, pady = 5)
             elif(validated[1]):
-                Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 20, pady = 5)
+                Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 50, pady = 5)
 
             Button(errorFrame, text = 'Đã hiểu', command = self.deleteErrorFrame).grid(row = 3, column = 0, padx = 20, pady = 15)
             return

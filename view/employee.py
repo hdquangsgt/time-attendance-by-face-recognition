@@ -38,13 +38,13 @@ class EmployeeGUI(object):
         def onClickKeeptimeManage():
             self.root.destroy()
             timekeeping = Tk()
-            frm_timekeeping = TimekeepingGUI(timekeeping)
+            TimekeepingGUI(timekeeping)
 
         def logout():
             from .login import LoginGUI
             self.root.destroy()
             logout = Tk()
-            frm_login = LoginGUI(logout)
+            LoginGUI(logout)
 
         btn_employee = Button(Layout_Frame,
                         text = 'Quản lý nhân viên',

@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk, filedialog
-from numpy import NaN
+from tkinter import messagebox
 from tkcalendar import *
 from .detail_timekeeping import DetailTimekeepingGUI
 import os
@@ -232,6 +232,13 @@ class TimekeepingGUI(object):
         return
 
     def checkout(self):
-        CheckOut()
+        filename = 'data/Models/Timekeeping.xlsx'
+        df = pd.read_excel(filename)
+        today = date.today()
+        df = df[df['date_logtime'] == today.strftime("%d/%m/%Y")]
+        if(df.empty):
+            messagebox.showerror(title="Lỗi Checkout", message="Không thể checkout khi chưa checkin!")
+        else:
+            CheckOut()
         self.loadData(self.table_timekeeping)
         return

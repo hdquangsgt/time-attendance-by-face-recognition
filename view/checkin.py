@@ -8,8 +8,14 @@ from sklearn import svm
 from scipy.spatial.distance import cosine
 import pandas as pd
 from datetime import datetime
+from time import sleep
 from openpyxl import load_workbook
 from pathlib import Path
+import pyttsx3
+import os
+
+engine = pyttsx3.init()
+voices = engine.getProperty("voices")
 
 filename = 'data/Models/Timekeeping.xlsx'
 df = pd.read_excel(filename)
@@ -28,7 +34,7 @@ class CheckIn(object):
         user_in_data_get_date = data_get_date['user_id'].tolist()
 
         model = FaceNet()
-
+        # sleep(100)
         while True:
             _, img = video_capture.read()
             # img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -56,9 +62,17 @@ class CheckIn(object):
                         self.fancyBox(img, bbox)
                         cv2.putText(img, str(result[0]), (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                         print(result[0])
+                        filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
+                        employees = pd.read_excel(filenameEmployee)
+                        nameEmployee = employees.loc[employees['user_id'] == result[0], 'name']
 
-                        if result[0] not in user_in_data_get_date:
+                        if(result[0] not in user_in_data_get_date):
+                            engine.setProperty("voice",voices[1].id)
+                            engine.say("Xin chào " + str(nameEmployee.index[0]))
+                            engine.runAndWait()
+
                             timestr = datetime.now().strftime('%H-%M-%S-%f')
+
                             path_checkin = "data/timekeeping/checkin/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(result[0]) + '/'
                             Path(path_checkin).mkdir(parents=True, exist_ok=True)
 
@@ -72,10 +86,9 @@ class CheckIn(object):
                                         path_checkin + str(timestr) + ".jpg", 
                                         ''
                                     ]
-
                             self.addDataExcel(data, filename)
                             user_in_data_get_date.append(result[0])
-                        
+
             cv2.imshow('Video', img)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -108,3 +121,4 @@ class CheckIn(object):
         # Bottom right x, y
         cv2.line(img, (x1, y1), (x1 - l, y1), (255, 0, 255), t)
         cv2.line(img, (x1, y1), (x1, y1 - l), (255, 0, 255), t)
+

@@ -115,7 +115,7 @@ class DetailTimekeepingGUI(object):
         face_checkout_lbl.grid(row = 4, column = 1, padx = 110, pady = 20)
 
         if(os.path.exists(self.timekeeping[6]) & os.path.isfile(self.timekeeping[6])):
-            imCheckout = Image.open(os.path.abspath(self.timekeeping[5]))
+            imCheckout = Image.open(os.path.abspath(self.timekeeping[6]))
             resizeImCheckout = imCheckout.resize((180,180), Image.ANTIALIAS)
         else:
             imCheckout = Image.open(os.path.abspath('view/images/image-default-checkout.png'))
