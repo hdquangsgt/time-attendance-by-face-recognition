@@ -13,13 +13,12 @@ from pathlib import Path
 import pyttsx3
 import os
 
-engine = pyttsx3.init()
-voices = engine.getProperty("voices")
-filename = 'data/Models/Timekeeping.xlsx'
-df = pd.read_excel(filename)
-
 class CheckOut(object):
     def __init__(self, *args):
+        engine = pyttsx3.init()
+        voices = engine.getProperty("voices")
+        filename = 'data/Models/Timekeeping.xlsx'
+        df = pd.read_excel(filename)
         video_capture = cv2.VideoCapture(0)
         mpFaceDetect = mp.solutions.face_detection
         mpDraw = mp.solutions.drawing_utils
@@ -30,7 +29,7 @@ class CheckOut(object):
         get_date = datetime.utcnow().strftime('%d/%m/%Y')
         data_get_null = df[(df['face_checkout'].isnull()) & (df['checkout_time'].isnull())]
         user_in_data_get_null = data_get_null['user_id'].tolist()
-        
+        print(user_in_data_get_null)
         model = FaceNet()
 
         while True:
@@ -66,7 +65,7 @@ class CheckOut(object):
                             timestr = datetime.now().strftime('%H-%M-%S-%f')
                             
                             row_index = df.loc[(df.date_logtime == get_date) & (df.user_id == result[0])]
-
+                            print(row_index)
                             if(row_index.empty):
                                 pass
                             else:

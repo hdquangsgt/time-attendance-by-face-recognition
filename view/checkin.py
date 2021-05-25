@@ -14,14 +14,13 @@ from pathlib import Path
 import pyttsx3
 import os
 
-engine = pyttsx3.init()
-voices = engine.getProperty("voices")
-
-filename = 'data/Models/Timekeeping.xlsx'
-df = pd.read_excel(filename)
-
 class CheckIn(object):
     def __init__(self, *args):
+        engine = pyttsx3.init()
+        voices = engine.getProperty("voices")
+
+        filename = 'data/Models/Timekeeping.xlsx'
+        df = pd.read_excel(filename)
         video_capture = cv2.VideoCapture(0)
         mpFaceDetect = mp.solutions.face_detection
         mpDraw = mp.solutions.drawing_utils
