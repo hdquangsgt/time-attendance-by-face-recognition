@@ -1,5 +1,7 @@
 from tkinter import *
+from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 from PIL import ImageTk, Image
 import os
 import pandas as pd
@@ -45,6 +47,17 @@ class DetailTimekeepingGUI(object):
         self.lbl_avatar = Label(self.panel_left, image = self.avatar)
         self.lbl_avatar.place(x = 100, y = 50)
 
+        #   Button update
+        btn_update = Button(self.panel_left,
+                        text = 'Cập nhật',
+                        bg = 'gray',
+                        fg = 'white',
+                        compound = CENTER,
+                        width = 27,
+                        font = ('tim new roman', 18),
+                        command = self.showDialogQuestion)
+        btn_update.place(x = 2, y = 450)
+
         #   Button back
         btn_back = Button(self.panel_left,
                         text = 'Trở về',
@@ -75,9 +88,9 @@ class DetailTimekeepingGUI(object):
         userId_lbl = Label(self.panel_right, text = 'Mã nhân viên', width = 20, compound = LEFT, font=("bold", 10))
         userId_lbl.grid(row = 1, column = 0, padx = 110, pady = 20)
 
-        self.userId_value_lbl = Entry(self.panel_right, width = 40, font=("bold", 10))
-        self.userId_value_lbl.insert(0,self.timekeeping[2])
-        self.userId_value_lbl.config(state='disabled')
+        listUserId = df['user_id'].tolist()
+        self.userId_value_lbl = ttk.Combobox(self.panel_right, value = listUserId, width = 38, font=("bold", 10))
+        self.userId_value_lbl.current(listUserId.index(self.timekeeping[2]))
         self.userId_value_lbl.grid(row = 1, column = 1, padx = 5, pady = 20, ipady = 1, ipadx = 20)
 
         #   Field checkin time
@@ -126,9 +139,45 @@ class DetailTimekeepingGUI(object):
 
         self.root.mainloop()
 
+    def showDialogQuestion(self):
+        global question_frame
+        question_frame = Tk()
+        question_frame.geometry('380x90')
+        question_frame.resizable(False, False)
+        question_frame.title('Cập nhật logtime')
+
+        lbl_question = Label(question_frame, text = 'Bạn có chắc chắn muốn chỉnh sửa logtime này!', font = ('time new roman', 13))
+        lbl_question.place(x = 15, y = 15)
+
+        btn_ok = Button(question_frame, width = 10, text = 'OK', bg = 'yellow', fg = 'black', font = ('time new roman',11), command = self.updateLogtime)
+        btn_ok.place(x = 55, y = 50)
+
+        btn_cancel = Button(question_frame, width = 10, text = 'Hủy', bg = 'red', fg = 'black', font = ('time new roman',11), command = self.destroyDialog)
+        btn_cancel.place(x = 230, y = 50)
+
+    def updateLogtime(self):
+        filename = os.path.abspath('data/Models/Timekeeping.xlsx')
+        df = pd.read_excel(filename)
+        
+        df.loc[(df['date_logtime'] == self.timekeeping[1]) & (df['user_id'] == self.timekeeping[2]), 'checkin_time'] = self.checkin_entry.get()
+        df.loc[(df['date_logtime'] == self.timekeeping[1]) & (df['user_id'] == self.timekeeping[2]), 'checkout_time'] = self.checkout_entry.get()
+
+        if(self.timekeeping[2] != self.userId_value_lbl.get()):
+            if(self.userId_value_lbl.get() not in df['user_id'].tolist()):
+                df.loc[(df['date_logtime'] == self.timekeeping[1]) & (df['user_id'] == self.timekeeping[2]), 'user_id'] = self.userId_value_lbl.get()
+            else:
+                messagebox.showerror(title="Lỗi chỉnh sửa", message="User ID này đã tồn tại trong danh sách chấm công!")
+        writer = pd.ExcelWriter(filename, engine='xlsxwriter', datetime_format='dd/mm/yyyy')
+        df.to_excel(writer,index=False)
+        writer.save()
+        question_frame.destroy()
+
+    def destroyDialog(self):
+        question_frame.destroy()
+    
     def goToBack(self):
         from .timekeeping import TimekeepingGUI
         self.root.destroy()
         frame = Tk()
-        timekeeping = TimekeepingGUI(frame)
+        TimekeepingGUI(frame)
         

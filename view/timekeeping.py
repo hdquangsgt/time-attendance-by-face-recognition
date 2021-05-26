@@ -182,6 +182,7 @@ class TimekeepingGUI(object):
                 self.root.destroy()
                 frame = Tk()
                 frame = DetailTimekeepingGUI(frame,timekeeping)
+                self.loadData(self.table_timekeeping)
             else:
                 pass
 
@@ -242,3 +243,6 @@ class TimekeepingGUI(object):
             CheckOut()
         self.loadData(self.table_timekeeping)
         return
+
+    def deleteLogtime(self):
+        pass
