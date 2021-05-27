@@ -143,28 +143,47 @@ class DetailEmployeeGUI(object):
     def updateEmployee(self):
         filename = os.path.abspath('data/Models/Employee.xlsx')
         df = pd.read_excel(filename)
+        
+        name = self.name_entry.get()
+        validated = self.validate(name,self.email_entry.get())
 
-        if(df.loc[df['user_id'] == self.employee[4], 'birth'][0] != self.birth_entry.get_date()):
+        if (validated == ['','']):
             df.loc[df['user_id'] == self.employee[4], 'birth'] = self.birth_entry.get_date()
-
-        if(df.loc[df['user_id'] == self.employee[4], 'email'][0] != self.email_entry.get()):
             df.loc[df['user_id'] == self.employee[4], 'email'] = self.email_entry.get()
 
-        if(df.loc[df['user_id'] == self.employee[4], 'name'][0] != self.name_entry.get()):
-            name = self.name_entry.get()
-            user_id = self.generateUserId(self.no_accent_vietnamese(name))
-            avatar = df.loc[df['user_id'] == self.employee[4], 'avatar'][0]
+            
+            if(not df.loc[(df['user_id'] == self.employee[4]) & (df['name'] != name), 'name'].empty):
+                user_id = self.generateUserId(self.no_accent_vietnamese(name))
+                avatar = df.loc[df['user_id'] == self.employee[4], 'avatar']
 
-            df.loc[df['user_id'] == self.employee[4], 'name'] = name
-            df.loc[df['user_id'] == self.employee[4], 'user_id'] = user_id
-            df.loc[df['user_id'] == user_id, 'avatar'] = avatar.replace(self.employee[4], user_id)
-            self.renameDir(self.employee[4], user_id)
-            self.txtUserId.set(user_id)
+                df.iloc[(df['user_id'] == self.employee[4]) & (df['name'] != self.name_entry.get()), 'name'] = name
+                df.iloc[(df['user_id'] == self.employee[4]) & (df['name'] != self.name_entry.get()), 'user_id'] = user_id
 
-        writer = pd.ExcelWriter(filename, engine='xlsxwriter', datetime_format='dd/mm/yyyy')
-        df.to_excel(writer,index=False)
-        writer.save()
-        messagebox.showinfo(title="Thông báo chỉnh sửa", message="Thông tin nhân viên được chỉnh sửa thành công!")
+                df.iloc[(df['user_id'] == user_id) & (df['name'] != self.name_entry.get()), 'avatar'] = avatar.replace(self.employee[4], user_id)
+                self.renameDir(self.employee[4], user_id)
+                self.txtUserId.set(user_id)
+
+            writer = pd.ExcelWriter(filename, engine='xlsxwriter', datetime_format='dd/mm/yyyy')
+            df.to_excel(writer,index=False)
+            writer.save()
+            messagebox.showinfo(title="Thông báo chỉnh sửa", message="Thông tin nhân viên được chỉnh sửa thành công!")
+        else:
+            global errorFrame
+            errorFrame = Tk()
+            errorFrame.geometry('240x80')
+            errorFrame.resizable(False, False)
+            errorFrame.title('Kiểm tra dữ liệu nhập')
+
+            if(validated[0]):
+                Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 50, pady = 5)
+            elif(validated[1]):
+                Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 50, pady = 5)
+
+            Button(errorFrame, text = 'Đã hiểu', command = self.deleteErrorFrame).grid(row = 3, column = 0, padx = 20, pady = 15)
+            return
+
+    def deleteErrorFrame(self):
+        errorFrame.destroy()
 
     def renameDir(self,user_id, new_user_id):
         if(os.path.exists(os.path.abspath("data/face_train/" + user_id))):
@@ -208,6 +227,31 @@ class DetailEmployeeGUI(object):
                 count = count + 1
 
         return user_id
+
+    def validate(self,name,email):
+        name_message = ''
+        email_message = ''
+        input = {
+            'name' : name,
+            'email': email
+        }
+        if(self.checkEmpty(input)):
+            return self.checkEmpty(input)
+        
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+        if(not re.search(regex,email)):   
+            email_message = 'Định dạng email không hợp lệ'
+        return [name_message,email_message]
+
+    def checkEmpty(self,input):
+        result = []
+        if(len(input['name']) == 0):
+            result.append('Tên không được để trống')
+
+        if(len(input['email']) == 0):
+            result.append('Email không được để trống')
+
+        return result
 
     def goToBack(self):
         from .employee import EmployeeGUI
