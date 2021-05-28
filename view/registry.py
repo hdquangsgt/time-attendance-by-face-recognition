@@ -102,6 +102,8 @@ class RegistryForm(object):
     
     def getIdLast(self,filename):
         df = pd.read_excel(filename)
+        if (df.empty):
+            return 0
         return df.iloc[-1]['id']
 
     def submit(self):
@@ -149,7 +151,10 @@ class RegistryForm(object):
     def createFolder(self,userId):
         parent_dir = os.path.abspath('data/face_train')
         path = os.path.join(parent_dir, userId)
-        os.makedirs(path)
+        if(os.path.exists(path)):
+            return
+        else:
+            os.makedirs(path)
 
     def generateUserId(self,name):
         arrName = name.split()
