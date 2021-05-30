@@ -267,8 +267,34 @@ class EmployeeGUI(object):
             os.startfile(os.path.abspath('data/face_train/' + self.employeeData[4]))
 
     def trainFace(self):
-        print("test")
-        pass
+        import cv2
+        from keras_facenet import FaceNet
+        import numpy as np
+        import pickle
+
+        path = 'data/face_train'
+        data = {}
+        model = FaceNet()
+
+        for folder in os.listdir(path):
+            data[folder] = []
+            for item in os.listdir(os.path.join(path, folder)):
+                img = cv2.imread(os.path.join(path, folder, item))
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+                img = np.expand_dims(img, axis = 0)
+                # Face extract embedding
+                encoding = model.embeddings(img)
+                # Add embedding to data face name
+                data[folder].append(encoding)
+                # Release memories
+                del img
+                del encoding
+
+        with open("Models/data_embeddings.p", "wb") as f:
+            pickle.dump(data, f)
+
+        messagebox.showinfo(title="Thông báo", message="Đã trích xuất khuôn mặt thành công.!")
 
     def deleteEmployee(self):
         pass

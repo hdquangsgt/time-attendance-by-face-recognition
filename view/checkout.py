@@ -23,8 +23,10 @@ class CheckOut(object):
         mpFaceDetect = mp.solutions.face_detection
         mpDraw = mp.solutions.drawing_utils
 
-        faceDetection = mpFaceDetect.FaceDetection(0.8)
-        SVM = pickle.load(open("Models/model_using_svm.sav", "rb"))
+        faceDetection = mpFaceDetect.FaceDetection(0.6)
+
+        with open("Models/data_embeddings.p", "rb") as f:
+            data = pickle.load(f)
         
         get_date = datetime.utcnow().strftime('%d/%m/%Y')
         data_get_null = df[(df['face_checkout'].isnull()) & (df['checkout_time'].isnull())]
@@ -54,40 +56,45 @@ class CheckOut(object):
 
                         face_feature = model.embeddings(face_preprocess)
                         
-                        result = SVM.predict(np.array(face_feature))
-                        proba = SVM.predict_proba(np.array(face_feature))
-                        
+                        distance = 99999
+                        name = 'Unknow'
+                        for db_name in data:
+                            for encoding in data[db_name]:
+                                dist = cosine(encoding, face_feature)
+                                if dist < 0.25 and dist < distance:
+                                    name = db_name
+                                    distance = dist
+                        cv2.putText(img, name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                        print(distance, '->', name)
                         self.fancyBox(img, bbox)
-                        cv2.putText(img, str(result[0]), (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                        print(proba, ' -> ', result[0])
+                        if name != 'Unknow':
+                            if name in user_in_data_get_null:
+                                timestr = datetime.now().strftime('%H-%M-%S-%f')
+                                
+                                row_index = df.loc[(df.date_logtime == get_date) & (df.user_id == name)]
+                                print(row_index)
+                                if(row_index.empty):
+                                    pass
+                                else:
+                                    filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
+                                    employees = pd.read_excel(filenameEmployee)
+                                    nameEmployee = employees.loc[employees['user_id'] == name, 'name']
+                                    print(nameEmployee)
+                                    path_checkout = "data/timekeeping/checkout/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(name) + '/'
+                                    Path(path_checkout).mkdir(parents=True, exist_ok=True)
+                                    cv2.imwrite(path_checkout + str(timestr) + ".jpg", roi_color)
 
-                        if result[0] in user_in_data_get_null:
-                            timestr = datetime.now().strftime('%H-%M-%S-%f')
-                            
-                            row_index = df.loc[(df.date_logtime == get_date) & (df.user_id == result[0])]
-                            print(row_index)
-                            if(row_index.empty):
-                                pass
-                            else:
-                                filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
-                                employees = pd.read_excel(filenameEmployee)
-                                nameEmployee = employees.loc[employees['user_id'] == result[0], 'name']
-                                print(nameEmployee)
-                                path_checkout = "data/timekeeping/checkout/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(result[0]) + '/'
-                                Path(path_checkout).mkdir(parents=True, exist_ok=True)
-                                cv2.imwrite(path_checkout + str(timestr) + ".jpg", roi_color)
+                                    engine.setProperty("voice",voices[1].id)
+                                    engine.say("Tạm biệt " + str(nameEmployee.index[0]))
+                                    engine.runAndWait()
 
-                                engine.setProperty("voice",voices[1].id)
-                                engine.say("Tạm biệt " + str(nameEmployee.index[0]))
-                                engine.runAndWait()
-
-                                data = [
-                                            row_index.index[0] + 2,
-                                            datetime.now().strftime('%H:%M:%S'),
-                                            path_checkout + str(timestr) + ".jpg"
-                                        ]
-                                self.updateCheckOut(data, filename)
-                                user_in_data_get_null.remove(result[0])
+                                    data_record = [
+                                                row_index.index[0] + 2,
+                                                datetime.now().strftime('%H:%M:%S'),
+                                                path_checkout + str(timestr) + ".jpg"
+                                            ]
+                                    self.updateCheckOut(data_record, filename)
+                                    user_in_data_get_null.remove(name)
 
             cv2.imshow('Video', img)
             if cv2.waitKey(1) & 0xFF == ord('q'):

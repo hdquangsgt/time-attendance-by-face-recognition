@@ -4,7 +4,6 @@ import pickle
 import numpy as np
 from tensorflow.keras.models import load_model
 from keras_facenet import FaceNet
-from sklearn import svm
 from scipy.spatial.distance import cosine
 import pandas as pd
 from datetime import datetime
@@ -25,14 +24,17 @@ class CheckIn(object):
         mpFaceDetect = mp.solutions.face_detection
         mpDraw = mp.solutions.drawing_utils
 
-        faceDetection = mpFaceDetect.FaceDetection(0.8)
-        SVM = pickle.load(open("Models/model_using_svm.sav", "rb"))
+        faceDetection = mpFaceDetect.FaceDetection(0.6)
+
+        with open("Models/data_embeddings.p", "rb") as f:
+            data = pickle.load(f)
 
         get_date = datetime.utcnow().strftime('%d/%m/%Y')
         data_get_date = df[(df['date_logtime'] == get_date)]
         user_in_data_get_date = data_get_date['user_id'].tolist()
 
         model = FaceNet()
+        
         # sleep(100)
         while True:
             _, img = video_capture.read()
@@ -55,38 +57,44 @@ class CheckIn(object):
 
                         face_feature = model.embeddings(face_preprocess)
 
-                        result = SVM.predict(np.array(face_feature))
-                        proba = SVM.predict_proba(np.array(face_feature))
-                        print(proba)
+                        distance = 99999
+                        name = 'Unknow'
+                        for db_name in data:
+                            for encoding in data[db_name]:
+                                dist = cosine(encoding, face_feature)
+                                if dist < 0.25 and dist < distance:
+                                    name = db_name
+                                    distance = dist
+                        cv2.putText(img, name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                        print(distance, '->', name)
                         self.fancyBox(img, bbox)
-                        cv2.putText(img, str(result[0]), (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                        print(result[0])
-                        filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
-                        employees = pd.read_excel(filenameEmployee)
-                        nameEmployee = employees.loc[employees['user_id'] == result[0], 'name']
+                        if name != 'Unknow':
+                            filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
+                            employees = pd.read_excel(filenameEmployee)
+                            nameEmployee = employees.loc[employees['user_id'] == name, 'name']
 
-                        if(result[0] not in user_in_data_get_date):
-                            engine.setProperty("voice",voices[1].id)
-                            engine.say("Xin chào " + str(nameEmployee.index[0]))
-                            engine.runAndWait()
+                            if(name not in user_in_data_get_date):
+                                engine.setProperty("voice",voices[1].id)
+                                engine.say("Xin chào " + str(nameEmployee.index[0]))
+                                engine.runAndWait()
 
-                            timestr = datetime.now().strftime('%H-%M-%S-%f')
+                                timestr = datetime.now().strftime('%H-%M-%S-%f')
 
-                            path_checkin = "data/timekeeping/checkin/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(result[0]) + '/'
-                            Path(path_checkin).mkdir(parents=True, exist_ok=True)
+                                path_checkin = "data/timekeeping/checkin/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(name) + '/'
+                                Path(path_checkin).mkdir(parents=True, exist_ok=True)
 
-                            cv2.imwrite(path_checkin + str(timestr) + ".jpg", roi_color)
+                                cv2.imwrite(path_checkin + str(timestr) + ".jpg", roi_color)
 
-                            data = [
-                                        datetime.now().strftime('%d/%m/%Y'), 
-                                        result[0],
-                                        datetime.now().strftime('%H:%M:%S'), 
-                                        '', 
-                                        path_checkin + str(timestr) + ".jpg", 
-                                        ''
-                                    ]
-                            self.addDataExcel(data, filename)
-                            user_in_data_get_date.append(result[0])
+                                data_record = [
+                                            datetime.now().strftime('%d/%m/%Y'), 
+                                            name,
+                                            datetime.now().strftime('%H:%M:%S'), 
+                                            '', 
+                                            path_checkin + str(timestr) + ".jpg", 
+                                            ''
+                                        ]
+                                self.addDataExcel(data_record, filename)
+                                user_in_data_get_date.append(name)
 
             cv2.imshow('Video', img)
             if cv2.waitKey(1) & 0xFF == ord('q'):
