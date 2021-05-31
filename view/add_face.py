@@ -7,12 +7,18 @@ from openpyxl import load_workbook
 import xlsxwriter
 
 class AddFaceGUI(object):
-    def __init__(self, employee = None):
+    def __init__(self, employee = None, tmp = None):
         self.employee = employee
+        self.tmp = tmp
         
+        countImage = 0
         if (self.employee):
             user_id = self.employee[4]
             folder = os.path.abspath('data/face_train/' + user_id)
+            countImage = len([name for name in os.listdir(os.path.abspath('data/face_train/'+self.employee[4]))])
+
+        if(self.tmp):
+            folder = os.path.abspath('data/tmp/' + self.tmp)
 
         video_capture = cv2.VideoCapture(0)
         mpFaceDetect = mp.solutions.face_detection
@@ -20,6 +26,7 @@ class AddFaceGUI(object):
 
         faceDetection = mpFaceDetect.FaceDetection(0.7)
         count = 0
+
         while True:
             _, img = video_capture.read()
 
@@ -33,24 +40,28 @@ class AddFaceGUI(object):
                     ih, iw, ic = img.shape
                     bbox = int(bboxC.xmin * iw) - 20, int(bboxC.ymin * ih) - 45, int(bboxC.width * iw) + 40, int(bboxC.height * ih) + 50
 
-                    if cv2.waitKey(1) & 0xFF == ord('b'):
-                        timestr = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')
-                        x, y, w, h = bbox
-                        roi_color = img[y:y+h, x:x+w]
-                        roi_color = cv2.resize(roi_color, (180, 180))
-                        pathImage = folder + '/' + str(timestr) + ".jpg"
-                        cv2.imwrite(pathImage, roi_color)
-                        if(self.employee[5] == 'nan'):
-                            self.updatePathAvatar('data/face_train/' + user_id + '/' + str(timestr) + ".jpg")
-                        count += 1
+                    if(countImage > 14 or count > 14):
+                        pass
+                    else:
+                        if cv2.waitKey(1) & 0xFF == ord('b'):
+                            timestr = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')
+                            x, y, w, h = bbox
+                            roi_color = img[y:y+h, x:x+w]
+                            roi_color = cv2.resize(roi_color, (180, 180))
+                            pathImage = folder + '/' + str(timestr) + ".jpg"
+                            cv2.imwrite(pathImage, roi_color)
+                            if(self.employee != None):
+                                if(self.employee[5] == 'nan'):
+                                    self.updatePathAvatar('data/face_train/' + user_id + '/' + str(timestr) + ".jpg")
+                            count += 1
 
                     self.fancyBox(img, bbox)
                     cv2.putText(img, f'Total Face: {int(count)}', (20, 50), cv2.FONT_HERSHEY_PLAIN, 2
-                            , (192, 0, 215), 2)
+                                , (192, 0, 215), 2)
             cv2.imshow('Video', img)
 
             if (cv2.waitKey(1) & 0xFF == ord('q')):
-                if(count >= 100):
+                if(countImage > 5 or count > 5):
                     break
         video_capture.release()
         cv2.destroyAllWindows()

@@ -1,11 +1,14 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import ImageTk, Image
-import os
+import os, shutil
+from os import path
 import pandas as pd
 from openpyxl import load_workbook
 import re
 from .datepicker import CustomDateEntry
+from .add_face import AddFaceGUI
+from pathlib import Path
 
 class RegistryForm(object):
     def __init__(self, root):
@@ -18,15 +21,7 @@ class RegistryForm(object):
 
         self.name_entry = ''
         self.email_entry = ''
-
-        #========= All images =========#
-        # imageBG = os.path.abspath('view/images/bg-login.png')
-        # self.bg_icon = PhotoImage(file = imageBG)
-        # bg_lbl = Label(self.root, image = self.bg_icon).place(x = 250, y = 0, relwidth = 1, relheight = 1)
-
-        # icon_registry = os.path.abspath('view/images/registry.png')
-        # self.icon_registry = PhotoImage(file=icon_registry)
-        # registry_lbl = Label(self.root, image = self.icon_registry).place(x = 80, y = 80)
+        self.user_id = ''
 
         registry_title = Label(self.root, 
                             text='Đăng ký nhân viên',
@@ -64,11 +59,34 @@ class RegistryForm(object):
         self.email_entry = Entry(registry_frm, width = 40)
         self.email_entry.grid(row = 3, column = 2, padx = 10, pady = 10)
 
+        #   Add face employee
+        face_lbl = Label(registry_frm, text="Thêm khuôn mặt", width = 20, compound = LEFT, font=("bold", 10))
+        face_lbl.grid(row = 4, column = 1, padx = 10, pady = 10)
+
+        #   Path avatar
+        self.face_btn = Button(registry_frm, text = 'Thêm ảnh nhân viên', command = self.addFace)
+        self.face_btn.grid(row = 4, column = 2, padx = 10, pady = 10)
+
         Button(registry_frm, text='Trở về',width=20,bg='brown',fg='white',command=self.goToBack).place(x=50,y=250)
         Button(registry_frm, text='Đăng ký',width=20,bg='brown',fg='white',command=self.submit).place(x=300,y=250)
         
     def goToBack(self):
         from .employee import EmployeeGUI
+
+        if(self.face_btn['text'] == 'Đã thêm ảnh nhân viên'):
+            folder = os.path.abspath('data/tmp/' + self.user_id)
+
+            for filename in os.listdir(folder):
+                file_path = os.path.join(folder, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)
+                except Exception as e:
+                    print('Failed to delete %s. Reason: %s' % (file_path, e))
+            os.rmdir(folder)
+
         self.root.destroy()
         frame = Tk()
         employee = EmployeeGUI(frame)
@@ -112,20 +130,21 @@ class RegistryForm(object):
         id = self.getIdLast(filename) + 1
         name = self.name_entry.get()
         
-        validated = self.validate(name,self.email_entry.get())
+        validated = self.validate(name,self.email_entry.get(),self.face_btn['text'])
         
-        if (validated == ['','']):
+        if (validated == ['','','']):
             user_id = self.generateUserId(self.no_accent_vietnamese(name))
+            avatar = 'data/face_train/' + user_id + '/' + os.listdir(os.path.abspath('data/tmp/'+user_id))[0]
             data = [
                 id,
                 user_id,
                 name,
                 self.birth_entry.get_date(),
                 self.email_entry.get(),
-                'view/images/avatar-default.png'
+                avatar
             ]
             self.addDataExcel(data, filename)
-            self.createFolder(user_id)
+            self.moveFolder(user_id)
             #   Exit
             employeeFrame = Tk()
             EmployeeGUI(employeeFrame)
@@ -133,14 +152,16 @@ class RegistryForm(object):
         else:
             global errorFrame
             errorFrame = Tk()
-            errorFrame.geometry('240x80')
+            errorFrame.geometry('240x100')
             errorFrame.resizable(False, False)
             errorFrame.title('Kiểm tra dữ liệu nhập')
 
             if(validated[0]):
                 Label(errorFrame, text = validated[0], fg = 'red').grid(row = 0, column = 0, padx = 50, pady = 5)
             elif(validated[1]):
-                Label(errorFrame, text = validated[1], fg = 'red').grid(row = 1, column = 0, padx = 50, pady = 5)
+                Label(errorFrame, text = validated[1], fg = 'red').grid(row = 0, column = 0, padx = 50, pady = 5)
+            elif(validated[2]):
+                Label(errorFrame, text = validated[2], fg = 'red').grid(row = 0, column = 0, padx = 10, pady = 5)
 
             Button(errorFrame, text = 'Đã hiểu', command = self.deleteErrorFrame).grid(row = 3, column = 0, padx = 20, pady = 15)
             return
@@ -148,13 +169,10 @@ class RegistryForm(object):
     def deleteErrorFrame(self):
         errorFrame.destroy()
 
-    def createFolder(self,userId):
-        parent_dir = os.path.abspath('data/face_train')
-        path = os.path.join(parent_dir, userId)
-        if(os.path.exists(path)):
-            return
-        else:
-            os.makedirs(path)
+    def moveFolder(self,userId):
+        origin = os.path.abspath('data/tmp/' + userId)
+        target = os.path.abspath('data/face_train/' + userId)
+        shutil.move(origin,target)
 
     def generateUserId(self,name):
         arrName = name.split()
@@ -175,12 +193,14 @@ class RegistryForm(object):
 
         return user_id
 
-    def validate(self,name,email):
+    def validate(self,name,email,addFace):
         name_message = ''
         email_message = ''
+        face_message = ''
         input = {
             'name' : name,
-            'email': email
+            'email': email,
+            'add_face': addFace
         }
         if(self.checkEmpty(input)):
             return self.checkEmpty(input)
@@ -188,7 +208,7 @@ class RegistryForm(object):
         regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
         if(not re.search(regex,email)):   
             email_message = 'Định dạng email không hợp lệ'
-        return [name_message,email_message]
+        return [name_message,email_message,face_message]
 
     def checkEmpty(self,input):
         result = []
@@ -198,5 +218,17 @@ class RegistryForm(object):
         if(len(input['email']) == 0):
             result.append('Email không được để trống')
 
+        if(input['add_face'] == 'Thêm ảnh nhân viên'):
+            result.append("Vui lòng thêm khuôn mặt \n nhân viên này!")
         return result
 
+    def addFace(self):
+        name = self.name_entry.get()
+        if(name != ''):
+            user_id = self.generateUserId(self.no_accent_vietnamese(name))
+            Path(os.path.abspath('data/tmp/' + user_id)).mkdir(parents=True, exist_ok=True)
+            AddFaceGUI(tmp = user_id)
+            self.user_id = user_id
+            self.face_btn.config(text = 'Đã thêm ảnh nhân viên')
+            self.face_btn.config(bg = 'green')
+        return

@@ -10,7 +10,7 @@ class LoginGUI(object):
     def __init__(self, root):
         self.root = root;
         self.root.title('Đăng nhập');
-        self.root.geometry('490x380+0+0');
+        self.root.geometry('495x415+0+0');
         self.root.resizable(False, False)
 
         #========= All images =========#
@@ -40,7 +40,7 @@ class LoginGUI(object):
         bg_lbl.pack()
 
         Login_Frame = Frame(self.root, bg = 'white');
-        Login_Frame.place(x = 10, y = 60);
+        Login_Frame.place(x = 10, y = 62);
         
         logolbl = Label(Login_Frame, image = self.logo).grid(row = 0, column = 0, pady = 10)
 
@@ -62,6 +62,17 @@ class LoginGUI(object):
         self.pass_entry = Entry(Login_Frame, bd=5, relief=GROOVE, font=('time new roman',15), show = '*')
         self.pass_entry.grid(row=2,column=1,padx=20)
 
+        self.checked = BooleanVar(value = False)
+        self.btnShowPass = Checkbutton(Login_Frame, 
+                                text='Hiển thị mật khẩu',
+                                variable = self.checked,
+                                onvalue=True,
+                                offvalue=False,
+                                bg = 'white',
+                                font = ('time new roman', 14),
+                                command=self.togglePassword)
+        self.btnShowPass.grid(sticky="W",row=3,column=1,padx=17)
+
         btnSubmit = Button(Login_Frame,
                             bd=0,
                             relief="groove",
@@ -74,11 +85,18 @@ class LoginGUI(object):
                             font=('time new roman',14,'bold'),
                             pady=10,
                             command=self.submit)
-        btnSubmit.grid(row=3,column=1,pady=10)
+        btnSubmit.grid(row=4,column=1,pady=10)
 
         btnSubmit.bind('<Button-1>', self.submit)
         self.user_entry.bind('<Return>',self.submit)
         self.pass_entry.bind('<Return>',self.submit)
+
+    
+    def togglePassword(self):
+        if self.checked.get():
+            self.pass_entry['show'] = ""
+        else:
+            self.pass_entry['show'] = "*"
 
     def checkLogin(self, username, password):
         filename = 'data/Models/User.xlsx'

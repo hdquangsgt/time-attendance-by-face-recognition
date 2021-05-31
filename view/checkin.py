@@ -62,7 +62,7 @@ class CheckIn(object):
                         for db_name in data:
                             for encoding in data[db_name]:
                                 dist = cosine(encoding, face_feature)
-                                if dist < 0.25 and dist < distance:
+                                if dist < 0.7 and dist < distance:
                                     name = db_name
                                     distance = dist
                         cv2.putText(img, name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -71,11 +71,11 @@ class CheckIn(object):
                         if name != 'Unknow':
                             filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
                             employees = pd.read_excel(filenameEmployee)
-                            nameEmployee = employees.loc[employees['user_id'] == name, 'name']
-
+                            listEmployee = employees.to_numpy().tolist()
+                            nameEmployee = [x for x in listEmployee if x[1] == name][0][2]
                             if(name not in user_in_data_get_date):
                                 engine.setProperty("voice",voices[1].id)
-                                engine.say("Xin chào " + str(nameEmployee.index[0]))
+                                engine.say("Xin chào " + nameEmployee)
                                 engine.runAndWait()
 
                                 timestr = datetime.now().strftime('%H-%M-%S-%f')

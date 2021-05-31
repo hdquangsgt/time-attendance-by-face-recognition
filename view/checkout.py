@@ -29,7 +29,7 @@ class CheckOut(object):
             data = pickle.load(f)
         
         get_date = datetime.utcnow().strftime('%d/%m/%Y')
-        data_get_null = df[(df['face_checkout'].isnull()) & (df['checkout_time'].isnull())]
+        data_get_null = df[(df['face_checkout'].isnull()) & (df['checkout_time'].isnull()) & (df['date_logtime'] == get_date)]
         user_in_data_get_null = data_get_null['user_id'].tolist()
         print(user_in_data_get_null)
         model = FaceNet()
@@ -78,14 +78,14 @@ class CheckOut(object):
                                 else:
                                     filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
                                     employees = pd.read_excel(filenameEmployee)
-                                    nameEmployee = employees.loc[employees['user_id'] == name, 'name']
-                                    print(nameEmployee)
+                                    listEmployee = employees.to_numpy().tolist()
+                                    nameEmployee = [x for x in listEmployee if x[1] == name][0][2]
                                     path_checkout = "data/timekeeping/checkout/" + str(datetime.now().strftime('%d-%m-%Y')) + '/' + str(name) + '/'
                                     Path(path_checkout).mkdir(parents=True, exist_ok=True)
                                     cv2.imwrite(path_checkout + str(timestr) + ".jpg", roi_color)
 
                                     engine.setProperty("voice",voices[1].id)
-                                    engine.say("Tạm biệt " + str(nameEmployee.index[0]))
+                                    engine.say("Tạm biệt " + nameEmployee)
                                     engine.runAndWait()
 
                                     data_record = [
