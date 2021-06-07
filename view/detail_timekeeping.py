@@ -159,8 +159,17 @@ class DetailTimekeepingGUI(object):
         filename = os.path.abspath('data/Models/Timekeeping.xlsx')
         df = pd.read_excel(filename)
         
-        df.loc[(df['date_logtime'] == self.timekeeping[1]) & (df['user_id'] == self.timekeeping[2]), 'checkin_time'] = self.checkin_entry.get()
-        df.loc[(df['date_logtime'] == self.timekeeping[1]) & (df['user_id'] == self.timekeeping[2]), 'checkout_time'] = self.checkout_entry.get()
+        timeCheckin = self.checkin_entry.get()
+        timeCheckout = self.checkout_entry.get()
+        if(timeCheckin == ''):
+            messagebox.showerror(title="Lỗi chỉnh sửa", message="Thông tin không được để rỗng!")
+            return
+        if(not (self.isValidateTime(timeCheckin) or self.isValidateTime(timeCheckout))):
+            messagebox.showerror(title="Lỗi chỉnh sửa", message="Định dạng giờ checkin hoặc checkout không đúng!")
+            return
+
+        df.loc[(df['date_logtime'] == self.timekeeping[1]) & (df['user_id'] == self.timekeeping[2]), 'checkin_time'] = timeCheckin
+        df.loc[(df['date_logtime'] == self.timekeeping[1]) & (df['user_id'] == self.timekeeping[2]), 'checkout_time'] = timeCheckout
 
         if(self.timekeeping[2] != self.userId_value_lbl.get()):
             if(self.userId_value_lbl.get() not in df['user_id'].tolist()):
@@ -171,6 +180,18 @@ class DetailTimekeepingGUI(object):
         df.to_excel(writer,index=False)
         writer.save()
         question_frame.destroy()
+
+    def isValidateTime(self,time):
+        import re
+        regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
+        p = re.compile(regex)
+        if (time == ""):
+            return False
+        m = re.search(p, time)
+        if(m is None):
+            return False
+        else:
+            return True
 
     def destroyDialog(self):
         question_frame.destroy()

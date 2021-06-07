@@ -24,7 +24,7 @@ class CheckIn(object):
         mpFaceDetect = mp.solutions.face_detection
         mpDraw = mp.solutions.drawing_utils
 
-        faceDetection = mpFaceDetect.FaceDetection(0.6)
+        faceDetection = mpFaceDetect.FaceDetection(0.7)
 
         with open("Models/data_embeddings.p", "rb") as f:
             data = pickle.load(f)
@@ -35,7 +35,6 @@ class CheckIn(object):
 
         model = FaceNet()
         
-        # sleep(100)
         while True:
             _, img = video_capture.read()
             # img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -62,7 +61,7 @@ class CheckIn(object):
                         for db_name in data:
                             for encoding in data[db_name]:
                                 dist = cosine(encoding, face_feature)
-                                if dist < 0.7 and dist < distance:
+                                if dist < 0.8 and dist < distance:
                                     name = db_name
                                     distance = dist
                         cv2.putText(img, name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -72,8 +71,9 @@ class CheckIn(object):
                             filenameEmployee = os.path.abspath('data/Models/Employee.xlsx')
                             employees = pd.read_excel(filenameEmployee)
                             listEmployee = employees.to_numpy().tolist()
-                            nameEmployee = [x for x in listEmployee if x[1] == name][0][2]
-                            if(name not in user_in_data_get_date):
+                            employee = [x for x in listEmployee if x[1] == name]
+                            if((name not in user_in_data_get_date) and employee != []):
+                                nameEmployee = employee[0][2]
                                 engine.setProperty("voice",voices[1].id)
                                 engine.say("Xin chào " + nameEmployee)
                                 engine.runAndWait()

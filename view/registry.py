@@ -146,9 +146,9 @@ class RegistryForm(object):
             self.addDataExcel(data, filename)
             self.moveFolder(user_id)
             #   Exit
+            self.root.destroy()
             employeeFrame = Tk()
             EmployeeGUI(employeeFrame)
-            self.root.destroy()
         else:
             global errorFrame
             errorFrame = Tk()
