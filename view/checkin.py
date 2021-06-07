@@ -61,7 +61,7 @@ class CheckIn(object):
                         for db_name in data:
                             for encoding in data[db_name]:
                                 dist = cosine(encoding, face_feature)
-                                if dist < 0.8 and dist < distance:
+                                if dist < 0.3 and dist < distance:
                                     name = db_name
                                     distance = dist
                         cv2.putText(img, name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
