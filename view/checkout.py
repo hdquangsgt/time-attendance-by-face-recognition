@@ -23,7 +23,7 @@ class CheckOut(object):
         mpFaceDetect = mp.solutions.face_detection
         mpDraw = mp.solutions.drawing_utils
 
-        faceDetection = mpFaceDetect.FaceDetection(0.6)
+        faceDetection = mpFaceDetect.FaceDetection(0.7)
 
         with open("Models/data_embeddings.p", "rb") as f:
             data = pickle.load(f)
@@ -31,7 +31,7 @@ class CheckOut(object):
         get_date = datetime.utcnow().strftime('%d/%m/%Y')
         data_get_null = df[(df['face_checkout'].isnull()) & (df['checkout_time'].isnull()) & (df['date_logtime'] == get_date)]
         user_in_data_get_null = data_get_null['user_id'].tolist()
-        print(user_in_data_get_null)
+        
         model = FaceNet()
 
         while True:
@@ -61,7 +61,7 @@ class CheckOut(object):
                         for db_name in data:
                             for encoding in data[db_name]:
                                 dist = cosine(encoding, face_feature)
-                                if dist < 0.25 and dist < distance:
+                                if dist < 0.8 and dist < distance:
                                     name = db_name
                                     distance = dist
                         cv2.putText(img, name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)

@@ -21,7 +21,7 @@ class EmployeeGUI(object):
         bg_color = '#990099'
         
         #   Title monitor
-        title = Label(self.root, text='Quản lý nhân viên', font=('time new roman',25,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
+        title = Label(self.root, text='Danh sách nhân viên', font=('time new roman',25,'bold'),relief = RIDGE,bd=12,bg=bg_color,fg='white')
         title.pack(fill = X)
 
         # Layouts menu
@@ -137,7 +137,6 @@ class EmployeeGUI(object):
         def set_text(text):
             txt_search.delete(0,END)
             txt_search.insert(0,text)
-            return
 
         self.keyword = StringVar()
         self.keyword.trace("w", lambda name, index, mode, keyword = self.keyword: callback(self.keyword))
@@ -259,8 +258,8 @@ class EmployeeGUI(object):
         if(self.employeeData):
             Path(os.path.abspath('data/face_train/' + self.employeeData[4])).mkdir(parents=True, exist_ok=True)
             AddFaceGUI(employee = self.employeeData)
+        self.root.mainloop()
         self.loadData(self.table_employee)
-        return
 
     def showFace(self):
         if(self.employeeData):
@@ -295,7 +294,7 @@ class EmployeeGUI(object):
         with open("Models/data_embeddings.p", "wb") as f:
             pickle.dump(data, f)
 
-        messagebox.showinfo(title="Thông báo", message="Đã trích xuất khuôn mặt thành công.!")
+        messagebox.showinfo(title="Thông báo", message="Đã trích xuất khuôn mặt thành công!")
 
     def deleteEmployee(self):
         pass

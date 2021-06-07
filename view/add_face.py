@@ -1,3 +1,4 @@
+from posixpath import abspath
 import cv2
 import os
 from datetime import datetime
@@ -51,7 +52,7 @@ class AddFaceGUI(object):
                             pathImage = folder + '/' + str(timestr) + ".jpg"
                             cv2.imwrite(pathImage, roi_color)
                             if(self.employee != None):
-                                if(self.employee[5] == 'nan'):
+                                if(self.employee[5] == 'nan' or os.path.exists(os.path.abspath(self.employee[5]) == False)):
                                     self.updatePathAvatar('data/face_train/' + user_id + '/' + str(timestr) + ".jpg")
                             count += 1
 
